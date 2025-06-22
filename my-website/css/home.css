@@ -6,7 +6,7 @@
       padding: 10px; background: #222;
     }
 
-    .navbar img { height: 40px; }
+    .navbar img { height: 30px; }
     .nav-links { display: flex; align-items: center; gap: 10px; }
     .nav-links a { color: white; text-decoration: none; margin: 0 5px; }
 
