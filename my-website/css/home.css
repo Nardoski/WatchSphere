@@ -1,6 +1,19 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; background: #111; color: #fff; }
 
+<div class="navbar">
+  <a href="/">
+    <img src="my-website/Attachments/WSLogo1.png" alt="Logo">
+  </a>
+  <div class="nav-links">
+    <!-- Your navigation links here -->
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <!-- etc. -->
+  </div>
+</div>
+
+
     .navbar {
       display: flex; justify-content: space-between; align-items: center;
       padding: 10px; background: #222;
