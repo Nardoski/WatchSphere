@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Watch trending movies, TV shows, and anime on WatchSphere. Stream your favorite content with multiple server options.">
+  <meta name="theme-color" content="#222">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <title>WatchSphere - Stream Movies, TV Shows & Anime</title>
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="css/home.css" as="style">
+  <link rel="preload" href="js/home.js" as="script">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="WSLogo1.png" type="image/png">
+  <link rel="apple-touch-icon" href="WSLogo1.png">
+  
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:title" content="WatchSphere - Stream Movies, TV Shows & Anime">
+  <meta property="og:description" content="Watch trending movies, TV shows, and anime with multiple server options">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="WSLogo1.png">
+  
+  <!-- Scripts -->
+  <script defer src="js/home.js"></script>
+</head>
+
+<body>
+  <!-- Skip to main content for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- Navigation -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="index.html" class="logo-link" aria-label="WatchSphere Home">
+        <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo" />
+        <span class="logo-text">WatchSphere</span>
+      </a>
+      
+      <!-- Mobile menu toggle -->
+      <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" class="nav-item active" aria-current="page">
+          <i class="fas fa-home" aria-hidden="true"></i>
+          <span>Home</span>
+        </a>
+        <a href="#movies" class="nav-item">
+          <i class="fas fa-film" aria-hidden="true"></i>
+          <span>Movies</span>
+        </a>
+        <a href="#tvshows" class="nav-item">
+          <i class="fas fa-tv" aria-hidden="true"></i>
+          <span>TV Shows</span>
+        </a>
+        <a href="#anime" class="nav-item">
+          <i class="fas fa-dragon" aria-hidden="true"></i>
+          <span>Anime</span>
+        </a>
+        
+        <!-- Search Button -->
+        <button class="search-toggle" onclick="openSearchModal()" aria-label="Open search">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          <span class="search-text">Search</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <!-- Hero Banner -->
+    <section class="banner" id="banner" role="banner">
+      <div class="banner-overlay"></div>
+      <div class="banner-content">
+        <h1 id="banner-title" class="banner-title"></h1>
+        <p id="banner-description" class="banner-description"></p>
+        <button class="banner-play-btn" id="bannerPlayBtn" onclick="showDetails(window.bannerItem)">
+          <i class="fas fa-play" aria-hidden="true"></i>
+          <span>Watch Now</span>
+        </button>
+      </div>
+      
+      <!-- Loading skeleton for banner -->
+      <div class="banner-skeleton" id="bannerSkeleton">
+        <div class="skeleton-title"></div>
+        <div class="skeleton-description"></div>
+        <div class="skeleton-button"></div>
+      </div>
+    </section>
+
+    <!-- Content Rows -->
+    <div class="content-container">
+      <!-- Trending Movies -->
+      <section class="row" id="movies" aria-labelledby="movies-heading">
+        <div class="row-header">
+          <h2 id="movies-heading" class="row-title">
+            <i class="fas fa-fire" aria-hidden="true"></i>
+            Trending Movies
+          </h2>
+          <button class="view-all-btn" aria-label="View all trending movies">
+            View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+        
+        <!-- Loading skeleton -->
+        <div class="list-skeleton" id="moviesSkeleton">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+        
+        <div class="list-container">
+          <button class="scroll-btn scroll-left" aria-label="Scroll movies left">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <div class="list" id="movies-list" role="list"></div>
+          <button class="scroll-btn scroll-right" aria-label="Scroll movies right">
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Trending TV Shows -->
+      <section class="row" id="tvshows" aria-labelledby="tvshows-heading">
+        <div class="row-header">
+          <h2 id="tvshows-heading" class="row-title">
+            <i class="fas fa-tv" aria-hidden="true"></i>
+            Trending TV Shows
+          </h2>
+          <button class="view-all-btn" aria-label="View all trending TV shows">
+            View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+        
+        <!-- Loading skeleton -->
+        <div class="list-skeleton" id="tvshowsSkeleton">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+        
+        <div class="list-container">
+          <button class="scroll-btn scroll-left" aria-label="Scroll TV shows left">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <div class="list" id="tvshows-list" role="list"></div>
+          <button class="scroll-btn scroll-right" aria-label="Scroll TV shows right">
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Trending Anime -->
+      <section class="row" id="anime" aria-labelledby="anime-heading">
+        <div class="row-header">
+          <h2 id="anime-heading" class="row-title">
+            <i class="fas fa-dragon" aria-hidden="true"></i>
+            Trending Anime
+          </h2>
+          <button class="view-all-btn" aria-label="View all trending anime">
+            View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+        
+        <!-- Loading skeleton -->
+        <div class="list-skeleton" id="animeSkeleton">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+        
+        <div class="list-container">
+          <button class="scroll-btn scroll-left" aria-label="Scroll anime left">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <div class="list" id="anime-list" role="list"></div>
+          <button class="scroll-btn scroll-right" aria-label="Scroll anime right">
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal for Movie/Show Details -->
+  <div class="modal" id="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+    <div class="modal-backdrop" onclick="closeModal()"></div>
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close modal">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+      
+      <div class="modal-body">
+        <div class="modal-poster">
+          <img id="modal-image" src="" alt="" loading="lazy" />
+          <div class="modal-rating-badge">
+            <i class="fas fa-star" aria-hidden="true"></i>
+            <span id="modal-rating-number"></span>
+          </div>
+        </div>
+        
+        <div class="modal-text">
+          <h2 id="modal-title" class="modal-title-text"></h2>
+          <div class="modal-meta">
+            <div class="stars" id="modal-rating" aria-label="Rating"></div>
+            <span class="modal-year" id="modal-year"></span>
+            <span class="modal-type" id="modal-type"></span>
+          </div>
+          <p id="modal-description" class="modal-description"></p>
+          
+          <div class="modal-genres" id="modal-genres"></div>
+        </div>
+      </div>
+      
+      <div class="server-selector">
+        <label for="server" class="server-label">
+          <i class="fas fa-server" aria-hidden="true"></i>
+          Change Server:
+        </label>
+        <select id="server" onchange="changeServer()" class="server-select">
+          <option value="vidsrc.cc">Vidsrc.cc - Fast HD</option>
+          <option value="vidsrc.me">Vidsrc.me - Alternative</option>
+          <option value="player.videasy.net">Player.Videasy.net - Multi Quality</option>
+        </select>
+      </div>
+      
+      <div class="video-container">
+        <iframe id="modal-video" 
+                width="100%" 
+                height="315" 
+                frameborder="0" 
+                allowfullscreen
+                loading="lazy"
+                title="Video player">
+        </iframe>
+        <div class="video-loading" id="videoLoading">
+          <div class="loading-spinner"></div>
+          <p>Loading video...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="search-modal" id="search-modal" role="dialog" aria-labelledby="search-title" aria-modal="true">
+    <div class="search-backdrop" onclick="closeSearchModal()"></div>
+    <div class="search-content">
+      <div class="search-header">
+        <h2 id="search-title" class="search-title">Search Movies, TV Shows & Anime</h2>
+        <button class="search-close" onclick="closeSearchModal()" aria-label="Close search">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      
+      <div class="search-input-container">
+        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+        <input type="text" 
+               id="search-input" 
+               class="search-input"
+               placeholder="Search for movies, TV shows, anime..." 
+               oninput="searchTMDB()" 
+               autocomplete="off"
+               aria-label="Search input" />
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" aria-label="Clear search">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      
+      <div class="search-suggestions" id="searchSuggestions">
+        <h3>Popular Searches:</h3>
+        <div class="suggestion-tags">
+          <button class="suggestion-tag" onclick="searchSuggestion('Avengers')">Avengers</button>
+          <button class="suggestion-tag" onclick="searchSuggestion('Breaking Bad')">Breaking Bad</button>
+          <button class="suggestion-tag" onclick="searchSuggestion('Attack on Titan')">Attack on Titan</button>
+          <button class="suggestion-tag" onclick="searchSuggestion('Stranger Things')">Stranger Things</button>
+        </div>
+      </div>
+      
+      <div class="search-results-container">
+        <div class="search-loading" id="searchLoading">
+          <div class="loading-spinner"></div>
+          <p>Searching...</p>
+        </div>
+        <div class="results" id="search-results" role="list"></div>
+        <div class="no-results" id="noResults" style="display: none;">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          <p>No results found. Try different keywords.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <img src="WSLogo1.png" alt="WatchSphere Logo" class="footer-logo">
+          <h3>WatchSphere</h3>
+          <p>Your ultimate streaming destination for movies, TV shows, and anime.</p>
+        </div>
+        
+        <div class="footer-links-section">
+          <div class="footer-column">
+            <h4>Quick Links</h4>
+            <a href="#movies">Movies</a>
+            <a href="#tvshows">TV Shows</a>
+            <a href="#anime">Anime</a>
+            <a href="#" onclick="openSearchModal()">Search</a>
+          </div>
+          
+          <div class="footer-column">
+            <h4>Support</h4>
+            <a href="#">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Help Center</a>
+            <a href="#">Report Issue</a>
+          </div>
+          
+          <div class="footer-column">
+            <h4>Legal</h4>
+            <a href="#">Disclaimer</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">DMCA</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 WatchSphere. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top button -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Back to top">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <!-- Loading overlay for initial page load -->
+  <div class="page-loading" id="pageLoading">
+    <div class="loading-content">
+      <img src="WSLogo1.png" alt="WatchSphere" class="loading-logo">
+      <div class="loading-spinner"></div>
+      <p>Loading WatchSphere...</p>
+    </div>
+  </div>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => console.log('SW registered'))
+          .catch(error => console.log('SW registration failed'));
+      });
+    }
+  </script>
+</body>
+</html>
