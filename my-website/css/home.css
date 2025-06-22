@@ -1,21 +1,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; background: #111; color: #fff; }
     
-<body>
-  <div class="navbar">
-    <a href="/">
-      <img src="your-logo.png" alt="Logo">
-    </a>
-    <div class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
-    </div>
-  </div>
-  <!-- ...rest of your page... -->
-</body>
-
-
     .navbar {
       display: flex; justify-content: space-between; align-items: center;
       padding: 10px; background: #222;
