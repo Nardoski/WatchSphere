@@ -120,4 +120,9 @@ const API_KEY = '913219c9e9d90cf47023e3599324e1f2';
       displayList(anime, 'anime-list');
     }
 
+    function toggleMenu() {
+      const menu = document.querySelector('.nav-menu');
+      menu.classList.toggle('active');
+}
+
     init();
