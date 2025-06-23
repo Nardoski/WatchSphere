@@ -121,3 +121,8 @@ const API_KEY = '913219c9e9d90cf47023e3599324e1f2';
     }
 
     init();
+
+function toggleMenu() {
+  const menu = document.getElementById('nav-menu');
+  menu.classList.toggle('active');
+}
