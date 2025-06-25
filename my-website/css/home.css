@@ -56,6 +56,19 @@ body { font-family: Arial, sans-serif; background: #111; color: #fff; }
   pointer-events: none;
 }
 
+.results-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 24px;
+}
+.results-inline img {
+  width: 120px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
 /* ===================== */
 /* === PAGE CONTENTS === */
 /* ===================== */
