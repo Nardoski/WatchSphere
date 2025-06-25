@@ -74,15 +74,7 @@ const API_KEY = '913219c9e9d90cf47023e3599324e1f2';
       document.getElementById('modal-video').src = '';
     }
 
-    function openSearchModal() {
-      document.getElementById('search-modal').style.display = 'flex';
-      document.getElementById('search-input').focus();
-    }
-
-    function closeSearchModal() {
-      document.getElementById('search-modal').style.display = 'none';
-      document.getElementById('search-results').innerHTML = '';
-    }
+ 
 
     async function searchTMDB() {
       const query = document.getElementById('search-input').value;
