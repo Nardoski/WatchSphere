@@ -76,30 +76,31 @@ const API_KEY = '913219c9e9d90cf47023e3599324e1f2';
 
  
 
-    async function searchTMDB() {
-      const query = document.getElementById('search-input').value;
-      if (!query.trim()) {
-        document.getElementById('search-results').innerHTML = '';
-        return;
-      }
+    async function searchTMDB(query) {
+  if (!query || query.trim() === "") return;
 
-      const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
-      const data = await res.json();
+  // Clear previous results if needed
+  const resultsContainer = document.getElementById("search-results-inline");
+  if (resultsContainer) resultsContainer.innerHTML = "";
 
-      const container = document.getElementById('search-results');
-      container.innerHTML = '';
-      data.results.forEach(item => {
-        if (!item.poster_path) return;
-        const img = document.createElement('img');
-        img.src = `${IMG_URL}${item.poster_path}`;
-        img.alt = item.title || item.name;
-        img.onclick = () => {
-          closeSearchModal();
-          showDetails(item);
-        };
-        container.appendChild(img);
-      });
-    }
+  // You can customize the type (movie, tv, multi)
+  const res = await fetch(
+    `https://api.themoviedb.org/3/search/multi?api_key=YOUR_API_KEY&query=${encodeURIComponent(query)}`
+  );
+  const data = await res.json();
+
+  if (resultsContainer && data.results.length > 0) {
+    data.results.forEach((item) => {
+      const img = document.createElement("img");
+      img.src = item.poster_path
+        ? `https://image.tmdb.org/t/p/w200${item.poster_path}`
+        : "fallback.png";
+      img.alt = item.title || item.name;
+      resultsContainer.appendChild(img);
+    });
+  }
+}
+
 
     async function init() {
       const movies = await fetchTrending('movie');
