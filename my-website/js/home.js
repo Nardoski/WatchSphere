@@ -85,3 +85,29 @@ async function init() {
 }
 
 init();
+
+// Add the missing search function to handle user input
+async function searchTMDB() {
+  const query = document.querySelector('.search-bar').value.trim();
+  if (!query) return;
+
+  const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
+  const data = await res.json();
+
+  // Clear previous results
+  const searchResultsContainer = document.querySelector('.search-results');
+  searchResultsContainer.innerHTML = '';
+
+  // Display new search results
+  data.results.forEach(item => {
+    if (!item.poster_path) return; // Skip items without poster images
+
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${item.poster_path}`;
+    img.alt = item.title || item.name;
+    img.onclick = () => showDetails(item); // Show details on click
+
+    searchResultsContainer.appendChild(img);
+  });
+}
+
