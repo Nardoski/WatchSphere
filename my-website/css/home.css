@@ -279,8 +279,27 @@
     font-size: 14px;
   }
 
+
+
   .footer-links {
     flex-direction: row;
     gap: 8px;
   }
+}
+
+/* Remove styles related to the search modal */
+.search-modal {
+  display: none;
+}
+
+.search-modal input {
+  display: none;
+}
+
+.search-modal .results {
+  display: none;
+}
+
+.search-modal .close {
+  display: none;
 }
