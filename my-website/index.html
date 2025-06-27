@@ -2,7 +2,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WatchSphere</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="css/home.css">
@@ -14,14 +14,14 @@
 </head>
 
 <body>
- <div class="navbar">
-  <a href="index.html">
-    <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
-  </a>
-  <div class="nav-links">
-    <input type="text" class="search-bar" placeholder="Search..." onfocus="openSearchModal()" />
+  <div class="navbar">
+    <a href="index.html">
+      <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
+    </a>
+    <div class="nav-links">
+      <input type="text" class="search-bar" placeholder="Search..." oninput="searchTMDB()" />
+    </div>
   </div>
-</div>
 
   <div class="banner" id="banner">
     <h1 id="banner-title"></h1>
@@ -46,14 +46,14 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal()" style="color: red;">&times;</span>
       <div class="modal-body">
-  <img id="modal-image" src="" alt="" />
-  <div class="modal-text">
-    <h2 id="modal-title"></h2>
-    <div class="stars" id="modal-rating"></div>
-    <p id="modal-description"></p>
-  </div>
-</div>
-      
+        <img id="modal-image" src="" alt="" />
+        <div class="modal-text">
+          <h2 id="modal-title"></h2>
+          <div class="stars" id="modal-rating"></div>
+          <p id="modal-description"></p>
+        </div>
+      </div>
+
       <div class="server-selector">
         <label for="server">Change Server:</label>
         <select id="server" onchange="changeServer()">
@@ -66,18 +66,18 @@
     </div>
   </div>
 
-  <div class="search-modal" id="search-modal">
-    <span class="close" onclick="closeSearchModal()" style="color: red;">&times;</span>
-    <input type="text" id="search-input" placeholder="Search for a movie or show..." oninput="searchTMDB()" />
-    <div class="results" id="search-results"></div>
-  </div>
+  <footer class="footer">
+    <div class="footer-content">
+      <p><strong>DISCLAIMER</strong></p>
+      <p>This website's server has no files on it. Only content from third-party websites and services is displayed on this website. We have no control over or endorsement of any of the products, services, or material provided by these websites.</p>
 
-<footer class="footer">
-  <div class="footer-content">
-    <p>DISCLAIMER</p>
-    <p>This website's server has no files on it. Only content from third-party websites and services is displayed on this website. We have no control over or endorsement of any of the products, services, or material provided by these websites.</p>
+      <div class="footer-links">
+        <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+        <a href="/terms-of-service" target="_blank">Terms of Service</a>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
 </body>
+
+</html>
