@@ -303,3 +303,22 @@
 .search-modal .close {
   display: none;
 }
+
+.search-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.search-results img {
+  width: 120px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.search-results img:hover {
+  transform: scale(1.1);
+}
+
