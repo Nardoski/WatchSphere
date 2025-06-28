@@ -1,14 +1,18 @@
+// Initialize API and URLs
 const API_KEY = '913219c9e9d90cf47023e3599324e1f2';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
+
 let currentItem;
 
+// Fetch trending movies, TV shows, and anime
 async function fetchTrending(type) {
   const res = await fetch(`${BASE_URL}/trending/${type}/week?api_key=${API_KEY}`);
   const data = await res.json();
   return data.results;
 }
 
+// Fetch trending anime
 async function fetchTrendingAnime() {
   let allResults = [];
 
@@ -24,11 +28,13 @@ async function fetchTrendingAnime() {
   return allResults;
 }
 
+// Display content on the banner
 function displayBanner(item) {
   document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
   document.getElementById('banner-title').textContent = item.title || item.name;
 }
 
+// Display content list (Movies, TV Shows, Anime)
 function displayList(items, containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
@@ -41,6 +47,7 @@ function displayList(items, containerId) {
   });
 }
 
+// Show details of selected item
 function showDetails(item) {
   currentItem = item;
   document.getElementById('modal-title').textContent = item.title || item.name;
@@ -51,6 +58,7 @@ function showDetails(item) {
   document.getElementById('modal').style.display = 'flex';
 }
 
+// Change the video server for the modal
 function changeServer() {
   const server = document.getElementById('server').value;
   const type = currentItem.media_type === "movie" ? "movie" : "tv";
@@ -67,11 +75,51 @@ function changeServer() {
   document.getElementById('modal-video').src = embedURL;
 }
 
+// Close the content modal
 function closeModal() {
   document.getElementById('modal').style.display = 'none';
   document.getElementById('modal-video').src = '';
 }
 
+// Open the search modal
+function openSearchModal() {
+  document.getElementById('search-modal').style.display = 'flex';
+  document.getElementById('search-input').focus();
+}
+
+// Close the search modal
+function closeSearchModal() {
+  document.getElementById('search-modal').style.display = 'none';
+  document.getElementById('search-results').innerHTML = '';
+}
+
+// Handle search input and display results
+async function searchTMDB() {
+  const query = document.getElementById('search-input').value;
+  if (!query.trim()) {
+    document.getElementById('search-results').innerHTML = '';
+    return;
+  }
+
+  const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
+  const data = await res.json();
+
+  const container = document.getElementById('search-results');
+  container.innerHTML = '';
+  data.results.forEach(item => {
+    if (!item.poster_path) return;
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${item.poster_path}`;
+    img.alt = item.title || item.name;
+    img.onclick = () => {
+      closeSearchModal();
+      showDetails(item);
+    };
+    container.appendChild(img);
+  });
+}
+
+// Initialize content and data
 async function init() {
   const movies = await fetchTrending('movie');
   const tvShows = await fetchTrending('tv');
