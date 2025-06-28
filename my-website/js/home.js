@@ -83,8 +83,6 @@ async function init() {
   displayList(anime, 'anime-list');
 }
 
-init();
-
 let timeout = null;
 
 function debounceSearch() {
@@ -119,5 +117,7 @@ async function performSearch() {
     container.innerHTML = 'No results found.';
   }
 }
+
+init();
 
 
