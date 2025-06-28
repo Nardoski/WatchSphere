@@ -258,3 +258,30 @@ body { font-family: Arial, sans-serif; background: #111; color: #fff; }
     gap: 8px;
   }
 }
+
+.search-results-container {
+  margin-top: 20px;
+  background: #222;
+  padding: 20px;
+  color: #fff;
+}
+
+.search-results img {
+  width: 150px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.search-results img:hover {
+  transform: scale(1.05);
+  filter: brightness(1.2);
+  z-index: 2;
+}
+
+.search-results-container h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #f39c12;
+}
+
