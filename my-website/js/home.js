@@ -109,6 +109,12 @@ const API_KEY = '913219c9e9d90cf47023e3599324e1f2';
       });
     }
 
+function toggleMenu() {
+  const navbar = document.querySelector('.navbar');
+  navbar.classList.toggle('active');
+}
+
+
     async function init() {
       const movies = await fetchTrending('movie');
       const tvShows = await fetchTrending('tv');
