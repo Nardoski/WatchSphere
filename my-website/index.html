@@ -19,9 +19,11 @@
     <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
   </a>
   <div class="nav-links">
-    <input type="text" class="search-bar" placeholder="Search..." onfocus="openSearchModal()" />
+    <!-- Simplified Search Bar -->
+    <input type="text" class="search-bar" placeholder="Search..." aria-label="Search" oninput="searchTMDB()" />
   </div>
 </div>
+
 
   <div class="banner" id="banner">
     <h1 id="banner-title"></h1>
