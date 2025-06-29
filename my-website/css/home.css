@@ -352,10 +352,10 @@ body {
   }
 }
 .search-icon {
-  background: none;
+background: none;
   border: none;
   color: white;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   cursor: pointer;
   padding: 8px;
   transition: color 0.3s ease;
@@ -363,4 +363,29 @@ body {
 
 .search-icon:hover {
   color: #f44336;
+}
+
+/* Desktop default layout */
+@media (min-width: 769px) {
+  .search-icon {
+    position: static;
+  }
+}
+
+/* Mobile: top-right corner */
+@media (max-width: 768px) {
+  .navbar {
+    position: relative;
+  }
+
+  .search-icon {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    z-index: 2;
+  }
+
+  .nav-links {
+    padding-right: 50px; /* prevent overlap with icon */
+  }
 }
