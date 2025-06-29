@@ -1,5 +1,5 @@
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -12,16 +12,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script defer src="js/home.js"></script>
 </head>
-
 <body>
- <div class="navbar">
-  <a href="index.html">
-    <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
-  </a>
-  <div class="nav-links">
-    <input type="text" class="search-bar" placeholder="Search..." onfocus="openSearchModal()" />
+  <div class="navbar">
+    <a href="index.html">
+      <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
+    </a>
+    <div class="nav-links">
+      <!-- Search removed -->
+    </div>
   </div>
-</div>
 
   <div class="banner" id="banner">
     <h1 id="banner-title"></h1>
@@ -46,14 +45,13 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal()" style="color: red;">&times;</span>
       <div class="modal-body">
-  <img id="modal-image" src="" alt="" />
-  <div class="modal-text">
-    <h2 id="modal-title"></h2>
-    <div class="stars" id="modal-rating"></div>
-    <p id="modal-description"></p>
-  </div>
-</div>
-      
+        <img id="modal-image" src="" alt="" />
+        <div class="modal-text">
+          <h2 id="modal-title"></h2>
+          <div class="stars" id="modal-rating"></div>
+          <p id="modal-description"></p>
+        </div>
+      </div>
       <div class="server-selector">
         <label for="server">Change Server:</label>
         <select id="server" onchange="changeServer()">
@@ -66,18 +64,11 @@
     </div>
   </div>
 
-  <div class="search-modal" id="search-modal">
-    <span class="close" onclick="closeSearchModal()" style="color: red;">&times;</span>
-    <input type="text" id="search-input" placeholder="Search for a movie or show..." oninput="searchTMDB()" />
-    <div class="results" id="search-results"></div>
-  </div>
-
-<footer class="footer">
-  <div class="footer-content">
-    <p>DISCLAIMER</p>
-    <p>This website's server has no files on it. Only content from third-party websites and services is displayed on this website. We have no control over or endorsement of any of the products, services, or material provided by these websites.</p>
+  <footer class="footer">
+    <div class="footer-content">
+      <p>DISCLAIMER</p>
+      <p>This website's server has no files on it. Only content from third-party websites and services is displayed on this website. We have no control over or endorsement of any of the products, services, or material provided by these websites.</p>
     </div>
-  </div>
-</footer>
-
+  </footer>
 </body>
+</html>
