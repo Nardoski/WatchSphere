@@ -354,7 +354,7 @@ body {
 .search-icon {
 background: none;
   border: none;
-  color: white;
+  color: red;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 8px;
