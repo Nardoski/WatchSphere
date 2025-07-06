@@ -30,14 +30,14 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: var(--bg-dark);
   color: var(--text-light);
   line-height: 1.6;
 }
 
 /* =============================
-   Reusable Utility Classes
+   Utility Classes
 ============================= */
 .rounded {
   border-radius: 8px;
@@ -51,6 +51,37 @@ body {
   text-align: center;
 }
 
+.btn {
+  background: var(--primary);
+  color: var(--text-light);
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+.btn:hover {
+  background: #d32f2f;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* =============================
+   Scrollbar
+============================= */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 /* =============================
    Navbar
 ============================= */
@@ -61,7 +92,6 @@ body {
   padding: 15px 20px;
   background: var(--bg-medium);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  flex-wrap: nowrap;
   position: relative;
 }
 
@@ -91,10 +121,11 @@ body {
    Search Bar
 ============================= */
 .search-bar {
-  padding: 8px 14px;
+  padding: 0.5rem 0.875rem;
   border-radius: 8px;
   border: none;
-  width: 280px;
+  width: 100%;
+  max-width: 280px;
   background: var(--bg-light);
   color: var(--text-light);
   transition: box-shadow 0.3s ease, background 0.3s ease;
@@ -116,13 +147,27 @@ body {
   display: flex;
   align-items: center;
   padding: 30px;
+  position: relative;
+}
+
+.banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), var(--bg-dark));
+  z-index: 0;
 }
 
 .banner h1 {
+  position: relative;
   background: rgba(0, 0, 0, 0.6);
   padding: 15px 20px;
   border-radius: 8px;
   font-size: 2rem;
+  z-index: 1;
 }
 
 /* =============================
@@ -150,7 +195,7 @@ body {
   width: 150px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .list img:hover,
@@ -159,17 +204,6 @@ body {
   transform: scale(1.05);
   filter: brightness(1.15);
   z-index: 2;
-}
-
-.list::-webkit-scrollbar,
-.episode-list::-webkit-scrollbar {
-  height: 8px;
-}
-
-.list::-webkit-scrollbar-thumb,
-.episode-list::-webkit-scrollbar-thumb {
-  background: #444;
-  border-radius: 4px;
 }
 
 /* =============================
@@ -185,7 +219,7 @@ body {
   display: none;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 50;
 }
 
 .modal-content {
@@ -195,11 +229,10 @@ body {
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
-  position: relative;
   text-align: center;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  cursor: default;
+  position: relative;
 }
 
 .modal-body {
@@ -207,7 +240,6 @@ body {
   align-items: flex-start;
   gap: 20px;
   margin-bottom: 20px;
-  cursor: default;
 }
 
 .modal-body img {
@@ -218,12 +250,6 @@ body {
 .modal-text {
   flex: 1;
   text-align: left;
-  cursor: default;
-}
-
-.modal img {
-  width: 25%;
-  border-radius: 8px;
 }
 
 .stars {
@@ -242,7 +268,7 @@ body {
 }
 
 /* =============================
-   Server Selector & Episode List
+   Server Selector & Episodes
 ============================= */
 .server-selector {
   margin: 20px 0;
@@ -260,7 +286,6 @@ body {
 
 .episode-list h3 {
   margin-bottom: 10px;
-  color: var(--text-light);
 }
 
 .episode-list ul {
@@ -289,11 +314,12 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  z-index: 15;
+  z-index: 55;
 }
 
 .search-modal input {
-  width: 300px;
+  width: 90%;
+  max-width: 300px;
   padding: 12px 16px;
   border-radius: 8px;
   border: none;
@@ -359,7 +385,7 @@ body {
 }
 
 /* =============================
-   Buttons & Controls
+   Buttons & Hamburger Menu
 ============================= */
 button:focus {
   outline: 2px solid var(--highlight);
@@ -367,18 +393,8 @@ button:focus {
 }
 
 .pagination-buttons button {
-  padding: 8px 16px;
+  composes: btn;
   margin: 0 8px;
-  background-color: var(--primary);
-  color: var(--text-light);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.pagination-buttons button:hover:not(:disabled) {
-  background-color: #d32f2f;
 }
 
 .pagination-buttons button:disabled {
@@ -393,7 +409,8 @@ button:focus {
   font-size: 1.8rem;
   cursor: pointer;
   padding: 8px;
-  z-index: 3;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .hamburger-menu {
@@ -417,8 +434,9 @@ button:focus {
   text-align: left;
   font-size: 1rem;
   padding: 8px 12px;
-  cursor: pointer;
   width: 100%;
+  cursor: pointer;
+  min-height: 44px;
 }
 
 .hamburger-menu button:hover {
@@ -438,7 +456,7 @@ button:focus {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 60;
 }
 
 .spinner {
@@ -462,23 +480,11 @@ button:focus {
 @media (max-width: 768px) {
   .navbar {
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
     padding: 15px;
   }
 
   .nav-links {
     display: none;
-  }
-
-  .hamburger {
-    top: 15px;
-    right: 15px;
-  }
-
-  .hamburger-menu {
-    top: 55px;
-    right: 15px;
   }
 
   .banner {
@@ -507,15 +513,9 @@ button:focus {
     width: 120px;
   }
 
-  .search-modal input {
-    width: 90%;
-    margin-top: 50px;
-  }
-
   .search-modal .results {
     justify-content: center;
     grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
-    overflow-x: auto;
     padding: 10px 0;
   }
 }
