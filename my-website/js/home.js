@@ -3,6 +3,8 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
 let currentItem;
 let currentMoviePage = 1;
+let currentTVPage = 1;
+let currentAnimePage = 1;
 const maxMoviePages = 500; // TMDB API caps at 500 pages
 
 
@@ -204,6 +206,94 @@ function changeMoviePage(delta) {
   if (currentMoviePage < 1) currentMoviePage = 1;
   if (currentMoviePage > maxMoviePages) currentMoviePage = maxMoviePages;
   loadAllMovies(currentMoviePage);
+}
+
+function openTVListModal() {
+  document.getElementById('tv-list-modal').style.display = 'flex';
+  currentTVPage = 1;
+  loadAllTVShows(currentTVPage);
+}
+
+function closeTVListModal() {
+  document.getElementById('tv-list-modal').style.display = 'none';
+}
+
+async function loadAllTVShows(page = 1) {
+  const container = document.getElementById('all-tv-list');
+  container.innerHTML = '';
+
+  const res = await fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}`);
+  const data = await res.json();
+
+  data.results.forEach(tv => {
+    if (!tv.poster_path) return;
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${tv.poster_path}`;
+    img.alt = tv.name || tv.title;
+    img.onclick = () => {
+      closeTVListModal();
+      tv.media_type = "tv"; // ensure media_type is set
+      showDetails(tv);
+    };
+    container.appendChild(img);
+  });
+
+  // Update pagination display
+  document.getElementById('tv-page-indicator').textContent = `Page ${page}`;
+  document.getElementById('prevTVPageBtn').disabled = (page === 1);
+  document.getElementById('nextTVPageBtn').disabled = (page === maxMoviePages); // reuse same max
+}
+
+function changeTVPage(delta) {
+  currentTVPage += delta;
+  if (currentTVPage < 1) currentTVPage = 1;
+  if (currentTVPage > maxMoviePages) currentTVPage = maxMoviePages;
+  loadAllTVShows(currentTVPage);
+}
+
+function openAnimeListModal() {
+  document.getElementById('anime-list-modal').style.display = 'flex';
+  currentAnimePage = 1;
+  loadAllAnime(currentAnimePage);
+}
+
+function closeAnimeListModal() {
+  document.getElementById('anime-list-modal').style.display = 'none';
+}
+
+function changeAnimePage(delta) {
+  currentAnimePage += delta;
+  if (currentAnimePage < 1) currentAnimePage = 1;
+  if (currentAnimePage > maxMoviePages) currentAnimePage = maxMoviePages;
+  loadAllAnime(currentAnimePage);
+}
+
+async function loadAllAnime(page = 1) {
+  const container = document.getElementById('all-anime-list');
+  container.innerHTML = '';
+
+  const url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&page=${page}&with_original_language=ja&with_genres=16&sort_by=popularity.desc`;
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  data.results.forEach(anime => {
+    if (!anime.poster_path) return;
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${anime.poster_path}`;
+    img.alt = anime.name || anime.title;
+    img.onclick = () => {
+      closeAnimeListModal();
+      anime.media_type = "tv";
+      showDetails(anime);
+    };
+    container.appendChild(img);
+  });
+
+  // Update page indicator and button states
+  document.getElementById('anime-page-indicator').textContent = `Page ${page}`;
+  document.getElementById('prevAnimePageBtn').disabled = (page === 1);
+  document.getElementById('nextAnimePageBtn').disabled = (page === maxMoviePages);
 }
 
 function toggleMenu() {
