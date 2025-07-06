@@ -22,6 +22,9 @@
   <button class="search-icon" onclick="openSearchModal()">
   <i class="fas fa-search"></i>
 </button>
+<button class="search-icon" onclick="openMovieListModal()">
+  <i class="fas fa-film"></i>
+</button>
   </div>
    
 </div>
@@ -78,6 +81,14 @@
     <input type="text" id="search-input" placeholder="Search for a movie or show..." oninput="searchTMDB()" />
     <div class="results" id="search-results"></div>
   </div>
+  
+  <div class="modal" id="movie-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeMovieListModal()" style="color: red;">&times;</span>
+    <h2>All Movies</h2>
+    <div class="list" id="all-movies-list" style="flex-wrap: wrap; justify-content: center;"></div>
+  </div>
+</div>
 
 <footer class="footer">
   <div class="footer-content">
