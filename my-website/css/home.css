@@ -378,15 +378,18 @@ background: none;
     position: relative;
   }
 
-  .search-icon {
+  .nav-links {
     position: absolute;
     top: 15px;
     right: 20px;
+    display: flex;
+    gap: 10px;
     z-index: 2;
   }
 
-  .nav-links {
-    padding-right: 50px; /* prevent overlap with icon */
+  .search-icon,
+  .movie-icon {
+    position: static;
   }
 }
 
@@ -447,3 +450,18 @@ background: none;
   background-color: #555;
   cursor: not-allowed;
 }
+
+.movie-icon {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 8px;
+  transition: color 0.3s ease;
+}
+
+.movie-icon:hover {
+  color: #f44336;
+}
+
