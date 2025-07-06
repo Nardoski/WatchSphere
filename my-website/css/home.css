@@ -362,11 +362,36 @@ body {
 
 /* Mobile: top-right corner */
 @media (max-width: 768px) {
-  .navbar {
+.navbar {
     position: relative;
     flex-direction: column;
     align-items: flex-start;
     padding: 15px;
+  }
+
+  .nav-links {
+    display: none; /* Not used anymore if you're only using hamburger menu */
+  }
+
+  .hamburger {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 20;
+  }
+
+  .hamburger-menu {
+    top: 55px; /* below the hamburger icon */
+    right: 15px;
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   }
 }
 
