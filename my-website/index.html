@@ -86,7 +86,15 @@
   <div class="modal-content">
     <span class="close" onclick="closeMovieListModal()" style="color: red;">&times;</span>
     <h2>All Movies</h2>
-    <div class="list" id="all-movies-list" style="flex-wrap: wrap; justify-content: center;"></div>
+   <div id="movie-list-wrapper">
+  <div class="list" id="all-movies-list" style="flex-wrap: wrap; justify-content: center;"></div>
+  <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+    <button id="prevPageBtn" onclick="changeMoviePage(-1)">Previous</button>
+    <span id="movie-page-indicator" style="margin: 0 10px;">Page 1</span>
+    <button id="nextPageBtn" onclick="changeMoviePage(1)">Next</button>
+  </div>
+</div>
+
   </div>
 </div>
 
