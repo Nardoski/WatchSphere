@@ -416,3 +416,14 @@ background: none;
   color: #0af;
 }
 
+#all-movies-list img {
+  width: 140px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#all-movies-list img:hover {
+  transform: scale(1.05);
+}
