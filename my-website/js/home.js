@@ -2,7 +2,8 @@ const API_KEY = 'a1e72fd93ed59f56e6332813b9f8dcae';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
 let currentItem;
-
+let currentMoviePage = 1;
+const maxMoviePages = 500; // TMDB API caps at 500 pages
 
 
 async function fetchTrending(type) {
@@ -164,34 +165,43 @@ init();
 
 function openMovieListModal() {
   document.getElementById('movie-list-modal').style.display = 'flex';
-  loadAllMovies();
+  currentMoviePage = 1;
+  loadAllMovies(currentMoviePage);
 }
 
 function closeMovieListModal() {
   document.getElementById('movie-list-modal').style.display = 'none';
 }
 
-async function loadAllMovies() {
+async function loadAllMovies(page = 1) {
   const container = document.getElementById('all-movies-list');
   container.innerHTML = '';
-  let page = 1;
-  const totalPages = 5; // you can increase this if needed
 
-  for (; page <= totalPages; page++) {
-    const res = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);
-    const data = await res.json();
+  const res = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);
+  const data = await res.json();
 
-    data.results.forEach(movie => {
-      if (!movie.poster_path) return;
-      const img = document.createElement('img');
-      img.src = `${IMG_URL}${movie.poster_path}`;
-      img.alt = movie.title || movie.name;
-      img.onclick = () => {
-        closeMovieListModal();
-        showDetails(movie);
-      };
-      container.appendChild(img);
-    });
-  }
+  data.results.forEach(movie => {
+    if (!movie.poster_path) return;
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${movie.poster_path}`;
+    img.alt = movie.title || movie.name;
+    img.onclick = () => {
+    closeMovieListModal();
+    movie.media_type = "movie";
+    showDetails(movie);
+    };
+    container.appendChild(img);
+  });
+
+  // Update pagination display
+  document.getElementById('movie-page-indicator').textContent = `Page ${page}`;
+  document.getElementById('prevPageBtn').disabled = (page === 1);
+  document.getElementById('nextPageBtn').disabled = (page === maxMoviePages);
 }
 
+function changeMoviePage(delta) {
+  currentMoviePage += delta;
+  if (currentMoviePage < 1) currentMoviePage = 1;
+  if (currentMoviePage > maxMoviePages) currentMoviePage = maxMoviePages;
+  loadAllMovies(currentMoviePage);
+}
