@@ -380,16 +380,22 @@ background: none;
 
   .nav-links {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 10px;
+    right: 15px;
     display: flex;
+    flex-direction: row;
+    align-items: center;
     gap: 10px;
     z-index: 2;
   }
 
   .search-icon,
   .movie-icon {
-    position: static;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    padding: 6px;
   }
 }
 
