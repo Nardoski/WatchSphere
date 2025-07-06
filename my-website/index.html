@@ -19,12 +19,16 @@
     <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
   </a>
   <div class="nav-links">
-  <button class="search-icon" onclick="openSearchModal()">
-  <i class="fas fa-search"></i>
+<!-- Hamburger button -->
+<button class="hamburger" onclick="toggleMenu()">
+  <i class="fas fa-bars"></i>
 </button>
-<button class="movie-icon" onclick="openMovieListModal()">
-  <i class="fas fa-film"></i>
-</button>
+
+<!-- Slide-out menu -->
+<div id="hamburger-menu" class="hamburger-menu">
+  <button onclick="openSearchModal()"><i class="fas fa-search"></i> Search</button>
+  <button onclick="openMovieListModal()"><i class="fas fa-film"></i> Movie List</button>
+</div>
 
   </div>
    
