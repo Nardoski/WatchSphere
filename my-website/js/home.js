@@ -5,15 +5,8 @@ let currentItem;
 let currentMoviePage = 1;
 let currentTVPage = 1;
 let currentAnimePage = 1;
-const maxMoviePages = 500;
+const maxMoviePages = 500; // TMDB API caps at 500 pages
 
-// Loader helpers
-function showLoader() {
-  document.getElementById('loader').style.display = 'flex';
-}
-function hideLoader() {
-  document.getElementById('loader').style.display = 'none';
-}
 
 async function fetchTrending(type) {
   const res = await fetch(`${BASE_URL}/trending/${type}/week?api_key=${API_KEY}`);
@@ -23,6 +16,7 @@ async function fetchTrending(type) {
 
 async function fetchTrendingAnime() {
   let allResults = [];
+
   for (let page = 1; page <= 3; page++) {
     const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&page=${page}`);
     const data = await res.json();
@@ -31,6 +25,7 @@ async function fetchTrendingAnime() {
     );
     allResults = allResults.concat(filtered);
   }
+
   return allResults;
 }
 
@@ -62,39 +57,36 @@ function displayList(items, containerId) {
 }
 
 async function showDetails(item) {
-  showLoader();
-  try {
-    currentItem = item;
-    document.getElementById('modal-title').textContent = item.title || item.name;
-    document.getElementById('modal-description').textContent = item.overview;
-    document.getElementById('modal-image').src = `${IMG_URL}${item.poster_path}`;
-    document.getElementById('modal-rating').innerHTML = '★'.repeat(Math.round(item.vote_average / 2));
-    changeServer();
-    document.getElementById('modal').style.display = 'flex';
+  currentItem = item;
+  document.getElementById('modal-title').textContent = item.title || item.name;
+  document.getElementById('modal-description').textContent = item.overview;
+  document.getElementById('modal-image').src = `${IMG_URL}${item.poster_path}`;
+  document.getElementById('modal-rating').innerHTML = '★'.repeat(Math.round(item.vote_average / 2));
+  changeServer();
+  document.getElementById('modal').style.display = 'flex';
 
-    const isAnime = item.media_type === "tv" || item.original_language === "ja";
-    const episodesContainer = document.getElementById('episodes-container');
-    const episodesList = document.getElementById('episodes-list');
-    if (isAnime) {
-      const episodes = await fetchEpisodes(item.id);
-      episodesList.innerHTML = '';
-      episodes.forEach(ep => {
-        const li = document.createElement('li');
-        li.textContent = `Episode ${ep.episode_number}: ${ep.name}`;
-        li.style.cursor = 'pointer';
-        li.style.color = '#00aced';
-        li.style.marginBottom = '8px';
-        li.onclick = () => {
-          changeServer(ep.season_number, ep.episode_number);
-        };
-        episodesList.appendChild(li);
-      });
-      episodesContainer.style.display = 'block';
-    } else {
-      episodesContainer.style.display = 'none';
-    }
-  } finally {
-    hideLoader();
+  const isAnime = item.media_type === "tv" || item.original_language === "ja";
+  const episodesContainer = document.getElementById('episodes-container');
+  const episodesList = document.getElementById('episodes-list');
+  if (isAnime) {
+    const episodes = await fetchEpisodes(item.id);
+    episodesList.innerHTML = '';
+   episodes.forEach(ep => {
+  const li = document.createElement('li');
+  li.textContent = `Episode ${ep.episode_number}: ${ep.name}`;
+  li.style.cursor = 'pointer';
+  li.style.color = '#00aced';
+  li.style.marginBottom = '8px';
+
+  li.onclick = () => {
+    changeServer(ep.season_number, ep.episode_number);
+  };
+
+  episodesList.appendChild(li);
+});
+    episodesContainer.style.display = 'block';
+  } else {
+    episodesContainer.style.display = 'none';
   }
 }
 
@@ -117,6 +109,7 @@ function changeServer(overrideSeason = null, overrideEpisode = null) {
 
   document.getElementById('modal-video').src = embedURL;
 }
+
 
 function closeModal() {
   document.getElementById('modal').style.display = 'none';
@@ -141,43 +134,33 @@ async function searchTMDB() {
     return;
   }
 
-  showLoader();
-  try {
-    const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
-    const data = await res.json();
+  const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
+  const data = await res.json();
 
-    const container = document.getElementById('search-results');
-    container.innerHTML = '';
-    data.results.forEach(item => {
-      if (!item.poster_path) return;
-      const img = document.createElement('img');
-      img.src = `${IMG_URL}${item.poster_path}`;
-      img.alt = item.title || item.name;
-      img.onclick = () => {
-        closeSearchModal();
-        showDetails(item);
-      };
-      container.appendChild(img);
-    });
-  } finally {
-    hideLoader();
-  }
+  const container = document.getElementById('search-results');
+  container.innerHTML = '';
+  data.results.forEach(item => {
+    if (!item.poster_path) return;
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${item.poster_path}`;
+    img.alt = item.title || item.name;
+    img.onclick = () => {
+      closeSearchModal();
+      showDetails(item);
+    };
+    container.appendChild(img);
+  });
 }
 
 async function init() {
-  showLoader();
-  try {
-    const movies = await fetchTrending('movie');
-    const tvShows = await fetchTrending('tv');
-    const anime = await fetchTrendingAnime();
+  const movies = await fetchTrending('movie');
+  const tvShows = await fetchTrending('tv');
+  const anime = await fetchTrendingAnime();
 
-    displayBanner(movies[Math.floor(Math.random() * movies.length)]);
-    displayList(movies, 'movies-list');
-    displayList(tvShows, 'tvshows-list');
-    displayList(anime, 'anime-list');
-  } finally {
-    hideLoader();
-  }
+  displayBanner(movies[Math.floor(Math.random() * movies.length)]);
+  displayList(movies, 'movies-list');
+  displayList(tvShows, 'tvshows-list');
+  displayList(anime, 'anime-list');
 }
 
 init();
@@ -193,33 +176,29 @@ function closeMovieListModal() {
 }
 
 async function loadAllMovies(page = 1) {
-  showLoader();
-  try {
-    const container = document.getElementById('all-movies-list');
-    container.innerHTML = '';
+  const container = document.getElementById('all-movies-list');
+  container.innerHTML = '';
 
-    const res = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);
-    const data = await res.json();
+  const res = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);
+  const data = await res.json();
 
-    data.results.forEach(movie => {
-      if (!movie.poster_path) return;
-      const img = document.createElement('img');
-      img.src = `${IMG_URL}${movie.poster_path}`;
-      img.alt = movie.title || movie.name;
-      img.onclick = () => {
-        closeMovieListModal();
-        movie.media_type = "movie";
-        showDetails(movie);
-      };
-      container.appendChild(img);
-    });
+  data.results.forEach(movie => {
+    if (!movie.poster_path) return;
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${movie.poster_path}`;
+    img.alt = movie.title || movie.name;
+    img.onclick = () => {
+    closeMovieListModal();
+    movie.media_type = "movie";
+    showDetails(movie);
+    };
+    container.appendChild(img);
+  });
 
-    document.getElementById('movie-page-indicator').textContent = `Page ${page}`;
-    document.getElementById('prevPageBtn').disabled = (page === 1);
-    document.getElementById('nextPageBtn').disabled = (page === maxMoviePages);
-  } finally {
-    hideLoader();
-  }
+  // Update pagination display
+  document.getElementById('movie-page-indicator').textContent = `Page ${page}`;
+  document.getElementById('prevPageBtn').disabled = (page === 1);
+  document.getElementById('nextPageBtn').disabled = (page === maxMoviePages);
 }
 
 function changeMoviePage(delta) {
@@ -240,33 +219,29 @@ function closeTVListModal() {
 }
 
 async function loadAllTVShows(page = 1) {
-  showLoader();
-  try {
-    const container = document.getElementById('all-tv-list');
-    container.innerHTML = '';
+  const container = document.getElementById('all-tv-list');
+  container.innerHTML = '';
 
-    const res = await fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}`);
-    const data = await res.json();
+  const res = await fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}`);
+  const data = await res.json();
 
-    data.results.forEach(tv => {
-      if (!tv.poster_path) return;
-      const img = document.createElement('img');
-      img.src = `${IMG_URL}${tv.poster_path}`;
-      img.alt = tv.name || tv.title;
-      img.onclick = () => {
-        closeTVListModal();
-        tv.media_type = "tv";
-        showDetails(tv);
-      };
-      container.appendChild(img);
-    });
+  data.results.forEach(tv => {
+    if (!tv.poster_path) return;
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${tv.poster_path}`;
+    img.alt = tv.name || tv.title;
+    img.onclick = () => {
+      closeTVListModal();
+      tv.media_type = "tv"; // ensure media_type is set
+      showDetails(tv);
+    };
+    container.appendChild(img);
+  });
 
-    document.getElementById('tv-page-indicator').textContent = `Page ${page}`;
-    document.getElementById('prevTVPageBtn').disabled = (page === 1);
-    document.getElementById('nextTVPageBtn').disabled = (page === maxMoviePages);
-  } finally {
-    hideLoader();
-  }
+  // Update pagination display
+  document.getElementById('tv-page-indicator').textContent = `Page ${page}`;
+  document.getElementById('prevTVPageBtn').disabled = (page === 1);
+  document.getElementById('nextTVPageBtn').disabled = (page === maxMoviePages); // reuse same max
 }
 
 function changeTVPage(delta) {
@@ -294,35 +269,31 @@ function changeAnimePage(delta) {
 }
 
 async function loadAllAnime(page = 1) {
-  showLoader();
-  try {
-    const container = document.getElementById('all-anime-list');
-    container.innerHTML = '';
+  const container = document.getElementById('all-anime-list');
+  container.innerHTML = '';
 
-    const url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&page=${page}&with_original_language=ja&with_genres=16&sort_by=popularity.desc`;
+  const url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&page=${page}&with_original_language=ja&with_genres=16&sort_by=popularity.desc`;
 
-    const res = await fetch(url);
-    const data = await res.json();
+  const res = await fetch(url);
+  const data = await res.json();
 
-    data.results.forEach(anime => {
-      if (!anime.poster_path) return;
-      const img = document.createElement('img');
-      img.src = `${IMG_URL}${anime.poster_path}`;
-      img.alt = anime.name || anime.title;
-      img.onclick = () => {
-        closeAnimeListModal();
-        anime.media_type = "tv";
-        showDetails(anime);
-      };
-      container.appendChild(img);
-    });
+  data.results.forEach(anime => {
+    if (!anime.poster_path) return;
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${anime.poster_path}`;
+    img.alt = anime.name || anime.title;
+    img.onclick = () => {
+      closeAnimeListModal();
+      anime.media_type = "tv";
+      showDetails(anime);
+    };
+    container.appendChild(img);
+  });
 
-    document.getElementById('anime-page-indicator').textContent = `Page ${page}`;
-    document.getElementById('prevAnimePageBtn').disabled = (page === 1);
-    document.getElementById('nextAnimePageBtn').disabled = (page === maxMoviePages);
-  } finally {
-    hideLoader();
-  }
+  // Update page indicator and button states
+  document.getElementById('anime-page-indicator').textContent = `Page ${page}`;
+  document.getElementById('prevAnimePageBtn').disabled = (page === 1);
+  document.getElementById('nextAnimePageBtn').disabled = (page === maxMoviePages);
 }
 
 function toggleMenu() {
@@ -330,6 +301,7 @@ function toggleMenu() {
   menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
 }
 
+// Optional: close menu on click outside
 document.addEventListener('click', (e) => {
   const menu = document.getElementById('hamburger-menu');
   const hamburger = document.querySelector('.hamburger');
