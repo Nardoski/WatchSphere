@@ -3,6 +3,8 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
 let currentItem;
 
+
+
 async function fetchTrending(type) {
   const res = await fetch(`${BASE_URL}/trending/${type}/week?api_key=${API_KEY}`);
   const data = await res.json();
@@ -159,3 +161,37 @@ async function init() {
 }
 
 init();
+
+function openMovieListModal() {
+  document.getElementById('movie-list-modal').style.display = 'flex';
+  loadAllMovies();
+}
+
+function closeMovieListModal() {
+  document.getElementById('movie-list-modal').style.display = 'none';
+}
+
+async function loadAllMovies() {
+  const container = document.getElementById('all-movies-list');
+  container.innerHTML = '';
+  let page = 1;
+  const totalPages = 5; // you can increase this if needed
+
+  for (; page <= totalPages; page++) {
+    const res = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);
+    const data = await res.json();
+
+    data.results.forEach(movie => {
+      if (!movie.poster_path) return;
+      const img = document.createElement('img');
+      img.src = `${IMG_URL}${movie.poster_path}`;
+      img.alt = movie.title || movie.name;
+      img.onclick = () => {
+        closeMovieListModal();
+        showDetails(movie);
+      };
+      container.appendChild(img);
+    });
+  }
+}
+
