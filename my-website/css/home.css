@@ -351,19 +351,7 @@ body {
     gap: 10px;
   }
 }
-.search-icon {
-background: none;
-  border: none;
-  color: red;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 8px;
-  transition: color 0.3s ease;
-}
 
-.search-icon:hover {
-  color: #f44336;
-}
 
 /* Desktop default layout */
 @media (min-width: 769px) {
@@ -449,20 +437,6 @@ background: none;
 .pagination-buttons button:disabled {
   background-color: #555;
   cursor: not-allowed;
-}
-
-.movie-icon {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 8px;
-  transition: color 0.3s ease;
-}
-
-.movie-icon:hover {
-  color: #f44336;
 }
 
 .hamburger {
