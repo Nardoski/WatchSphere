@@ -369,10 +369,6 @@ body {
     padding: 15px;
   }
 
-  .nav-links {
-    display: none; /* Not used anymore if you're only using hamburger menu */
-  }
-
   .hamburger {
     position: absolute;
     top: 15px;
