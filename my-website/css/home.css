@@ -379,23 +379,13 @@ body {
   }
 
 .hamburger {
-    position: absolute;
     top: 15px;
     right: 15px;
-    z-index: 20;
   }
 
   .hamburger-menu {
-    position: absolute;
     top: 55px;
     right: 15px;
-    display: none;
-    flex-direction: column;
-    background-color: #1e1e1e;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 10px;
-    z-index: 10;
   }
 
   .banner {
