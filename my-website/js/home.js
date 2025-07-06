@@ -205,3 +205,17 @@ function changeMoviePage(delta) {
   if (currentMoviePage > maxMoviePages) currentMoviePage = maxMoviePages;
   loadAllMovies(currentMoviePage);
 }
+
+function toggleMenu() {
+  const menu = document.getElementById('hamburger-menu');
+  menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+}
+
+// Optional: close menu on click outside
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('hamburger-menu');
+  const hamburger = document.querySelector('.hamburger');
+  if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
