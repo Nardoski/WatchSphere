@@ -375,18 +375,18 @@ background: none;
 /* Mobile: top-right corner */
 @media (max-width: 768px) {
   .navbar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     position: relative;
+    padding: 10px 15px;
   }
 
   .nav-links {
-    position: absolute;
-    top: 10px;
-    right: 15px;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
-    z-index: 2;
   }
 
   .search-icon,
