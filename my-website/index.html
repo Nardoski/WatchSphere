@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WatchSphere</title>
+  <title>WatchSphere - Watch Movie, TV Shows, Anime Online for free</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="css/home.css">
   <link rel="preload" href="css/home.css" as="style">
@@ -26,6 +26,9 @@
 <div id="hamburger-menu" class="hamburger-menu">
   <button onclick="openSearchModal()"><i class="fas fa-search"></i> Search</button>
   <button onclick="openMovieListModal()"><i class="fas fa-film"></i> Movie List</button>
+  <button onclick="openTVListModal()"><i class="fas fa-tv"></i> TV Shows List</button>
+  <button onclick="openAnimeListModal()"><i class="fas fa-dragon"></i> Anime List</button>
+
 </div>
 </div>
 
@@ -95,6 +98,36 @@
   </div>
 </div>
 
+  </div>
+</div>
+  
+  <div class="modal" id="tv-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeTVListModal()" style="color: red;">&times;</span>
+    <h2>All TV Shows</h2>
+    <div id="tv-list-wrapper">
+      <div class="list" id="all-tv-list" style="flex-wrap: wrap; justify-content: center;"></div>
+      <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+        <button id="prevTVPageBtn" onclick="changeTVPage(-1)">Previous</button>
+        <span id="tv-page-indicator" style="margin: 0 10px;">Page 1</span>
+        <button id="nextTVPageBtn" onclick="changeTVPage(1)">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <div class="modal" id="anime-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeAnimeListModal()" style="color: red;">&times;</span>
+    <h2>Anime List</h2>
+    <div id="anime-list-wrapper">
+      <div class="list" id="all-anime-list" style="flex-wrap: wrap; justify-content: center;"></div>
+      <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+        <button id="prevAnimePageBtn" onclick="changeAnimePage(-1)">Previous</button>
+        <span id="anime-page-indicator" style="margin: 0 10px;">Page 1</span>
+        <button id="nextAnimePageBtn" onclick="changeAnimePage(1)">Next</button>
+      </div>
+    </div>
   </div>
 </div>
 
