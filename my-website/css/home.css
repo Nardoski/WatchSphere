@@ -427,3 +427,23 @@ background: none;
 #all-movies-list img:hover {
   transform: scale(1.05);
 }
+
+.pagination-buttons button {
+  padding: 8px 16px;
+  margin: 0 8px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.pagination-buttons button:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.pagination-buttons button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
