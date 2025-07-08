@@ -1,5 +1,4 @@
-const API_KEY = '913219c9e9d90cf47023e3599324e1f2';
-const BASE_URL = 'https://api.themoviedb.org/3';
+const BASE_URL = 'https://tmdb-proxy.nardoski.workers.dev'; // ⬅️ Replace with your real Worker URL
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
 let currentItem;
 let currentMoviePage = 1;
@@ -7,7 +6,6 @@ let currentTVPage = 1;
 let currentAnimePage = 1;
 const maxMoviePages = 500;
 
-// Loader helpers
 function showLoader() {
   document.getElementById('loader').style.display = 'flex';
 }
@@ -16,7 +14,7 @@ function hideLoader() {
 }
 
 async function fetchTrending(type) {
-  const res = await fetch(`${BASE_URL}/trending/${type}/week?api_key=${API_KEY}`);
+  const res = await fetch(`${BASE_URL}/?endpoint=/trending/${type}/week`);
   const data = await res.json();
   return data.results;
 }
@@ -24,7 +22,7 @@ async function fetchTrending(type) {
 async function fetchTrendingAnime() {
   let allResults = [];
   for (let page = 1; page <= 3; page++) {
-    const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&page=${page}`);
+    const res = await fetch(`${BASE_URL}/?endpoint=/trending/tv/week&page=${page}`);
     const data = await res.json();
     const filtered = data.results.filter(item =>
       item.original_language === 'ja' && item.genre_ids.includes(16)
@@ -35,11 +33,11 @@ async function fetchTrendingAnime() {
 }
 
 async function fetchEpisodes(tvId) {
-  const seasonRes = await fetch(`${BASE_URL}/tv/${tvId}?api_key=${API_KEY}`);
+  const seasonRes = await fetch(`${BASE_URL}/?endpoint=/tv/${tvId}`);
   const seasonData = await seasonRes.json();
   const lastSeason = seasonData.number_of_seasons;
 
-  const episodeRes = await fetch(`${BASE_URL}/tv/${tvId}/season/${lastSeason}?api_key=${API_KEY}`);
+  const episodeRes = await fetch(`${BASE_URL}/?endpoint=/tv/${tvId}/season/${lastSeason}`);
   const episodeData = await episodeRes.json();
   return episodeData.episodes || [];
 }
@@ -143,7 +141,7 @@ async function searchTMDB() {
 
   showLoader();
   try {
-    const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
+    const res = await fetch(`${BASE_URL}/?endpoint=/search/multi&query=${encodeURIComponent(query)}`);
     const data = await res.json();
 
     const container = document.getElementById('search-results');
@@ -198,7 +196,7 @@ async function loadAllMovies(page = 1) {
     const container = document.getElementById('all-movies-list');
     container.innerHTML = '';
 
-    const res = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);
+    const res = await fetch(`${BASE_URL}/?endpoint=/movie/popular&page=${page}`);
     const data = await res.json();
 
     data.results.forEach(movie => {
@@ -245,7 +243,7 @@ async function loadAllTVShows(page = 1) {
     const container = document.getElementById('all-tv-list');
     container.innerHTML = '';
 
-    const res = await fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}`);
+    const res = await fetch(`${BASE_URL}/?endpoint=/tv/popular&page=${page}`);
     const data = await res.json();
 
     data.results.forEach(tv => {
@@ -299,9 +297,7 @@ async function loadAllAnime(page = 1) {
     const container = document.getElementById('all-anime-list');
     container.innerHTML = '';
 
-    const url = `${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&page=${page}&with_original_language=ja&with_genres=16&sort_by=popularity.desc`;
-
-    const res = await fetch(url);
+    const res = await fetch(`${BASE_URL}/?endpoint=/discover/tv&language=en-US&page=${page}&with_original_language=ja&with_genres=16&sort_by=popularity.desc`);
     const data = await res.json();
 
     data.results.forEach(anime => {
