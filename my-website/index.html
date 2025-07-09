@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WatchSphere</title>
+  <title>WatchSphere - Watch Movies, TV Shows and Anime online</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="css/home.css">
   <link rel="preload" href="css/home.css" as="style">
@@ -14,71 +14,55 @@
 </head>
 
 <body>
-  <div id="loader" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-  background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
-  <div style="color: white; font-size: 24px;">Loading...</div>
+ <div class="navbar">
+  <a href="index.html">
+    <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
+  </a>
+<!-- place inside .navbar, NOT inside .nav-links -->
+<button class="hamburger" onclick="toggleMenu()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<div id="hamburger-menu" class="hamburger-menu">
+  <button onclick="openSearchModal()"><i class="fas fa-search"></i> Search</button>
+  <button onclick="openMovieListModal()"><i class="fas fa-film"></i> Movie List</button>
+  <button onclick="openTVListModal()"><i class="fas fa-tv"></i> TV Shows List</button>
+  <button onclick="openAnimeListModal()"><i class="fas fa-dragon"></i> Anime List</button>
+
+</div>
 </div>
 
-  <noscript>
-    <div style="background: #111; color: #fff; padding: 20px; text-align: center;">
-      This site requires JavaScript to function. Please enable it in your browser settings.
-    </div>
-  </noscript>
+  <div class="banner" id="banner">
+    <h1 id="banner-title"></h1>
+  </div>
 
-  <header class="navbar">
-    <a href="index.html">
-      <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
-    </a>
-    <nav class="nav-links">
-      <a href="#" aria-label="Home">Home</a>
-      <a href="#" aria-label="TV Shows">TV Shows</a>
-      <a href="#" aria-label="Movies">Movies</a>
-      <a href="#" aria-label="Anime">Anime</a>
-      <button class="search-icon" onclick="openSearchModal()" aria-label="Search">
-        <i class="fas fa-search"></i>
-      </button>
-    </nav>
-  </header>
+  <div class="row">
+    <h2>Trending Movies</h2>
+    <div class="list" id="movies-list"></div>
+  </div>
 
-  <section class="hero-banner" id="banner">
-    <div class="banner-overlay">
-      <h1 id="banner-title"></h1>
-      <p id="banner-description"></p>
-      <div class="banner-buttons">
-        <button class="btn play" aria-label="Play Trailer"><i class="fas fa-play"></i> Play</button>
-        <button class="btn info" aria-label="More Info"><i class="fas fa-info-circle"></i> More Info</button>
-      </div>
-    </div>
-  </section>
+  <div class="row">
+    <h2>Trending TV Shows</h2>
+    <div class="list" id="tvshows-list"></div>
+  </div>
 
-  <main>
-    <div class="row">
-      <h2>Trending Movies</h2>
-      <div class="list" id="movies-list"></div>
-    </div>
-
-    <div class="row">
-      <h2>Trending TV Shows</h2>
-      <div class="list" id="tvshows-list"></div>
-    </div>
-
-    <div class="row">
-      <h2>Trending Anime</h2>
-      <div class="list" id="anime-list"></div>
-    </div>
-  </main>
+  <div class="row">
+    <h2>Trending Anime</h2>
+    <div class="list" id="anime-list"></div>
+  </div>
 
   <div class="modal" id="modal">
     <div class="modal-content">
-      <span class="close" onclick="closeModal()" aria-label="Close Modal">&times;</span>
+      <span class="close" onclick="closeModal()" style="color: red;">&times;</span>
       <div class="modal-body">
-        <img id="modal-image" src="" alt="Poster" />
-        <div class="modal-text">
-          <h2 id="modal-title"></h2>
-          <div class="stars" id="modal-rating"></div>
-          <p id="modal-description"></p>
-        </div>
-      </div>
+  <img id="modal-image" src="" alt="" />
+  <div class="modal-text">
+    <h2 id="modal-title"></h2>
+    <div class="stars" id="modal-rating"></div>
+    <p id="modal-description"></p>
+  </div>
+</div>
+      
       <div class="server-selector">
         <label for="server">Change Server:</label>
         <select id="server" onchange="changeServer()">
@@ -89,24 +73,73 @@
       </div>
       <iframe id="modal-video" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
       <div id="episodes-container" style="margin-top: 20px; display: none;">
-        <h3>Episodes</h3>
-        <ul id="episodes-list" style="list-style: none; padding-left: 0;"></ul>
-      </div>
+      <h3>Episodes</h3>
+      <ul id="episodes-list" style="list-style: none; padding-left: 0;"></ul>
+    </div>
     </div>
   </div>
 
   <div class="search-modal" id="search-modal">
-    <span class="close" onclick="closeSearchModal()" aria-label="Close Search">&times;</span>
+    <span class="close" onclick="closeSearchModal()" style="color: red;">&times;</span>
     <input type="text" id="search-input" placeholder="Search for a movie or show..." oninput="searchTMDB()" />
     <div class="results" id="search-results"></div>
   </div>
+  
+  <div class="modal" id="movie-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeMovieListModal()" style="color: red;">&times;</span>
+    <h2>All Movies</h2>
+   <div id="movie-list-wrapper">
+  <div class="list" id="all-movies-list" style="flex-wrap: wrap; justify-content: center;"></div>
+  <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+    <button id="prevPageBtn" onclick="changeMoviePage(-1)">Previous</button>
+    <span id="movie-page-indicator" style="margin: 0 10px;">Page 1</span>
+    <button id="nextPageBtn" onclick="changeMoviePage(1)">Next</button>
+  </div>
+</div>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <p>DISCLAIMER</p>
-      <p>This website's server has no files on it. Only content from third-party websites and services is displayed on this website. We have no control over or endorsement of any of the products, services, or material provided by these websites.</p>
+  </div>
+</div>
+  
+  <div class="modal" id="tv-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeTVListModal()" style="color: red;">&times;</span>
+    <h2>All TV Shows</h2>
+    <div id="tv-list-wrapper">
+      <div class="list" id="all-tv-list" style="flex-wrap: wrap; justify-content: center;"></div>
+      <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+        <button id="prevTVPageBtn" onclick="changeTVPage(-1)">Previous</button>
+        <span id="tv-page-indicator" style="margin: 0 10px;">Page 1</span>
+        <button id="nextTVPageBtn" onclick="changeTVPage(1)">Next</button>
+      </div>
     </div>
-  </footer>
-</body>
+  </div>
+</div>
+  
+  <div class="modal" id="anime-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeAnimeListModal()" style="color: red;">&times;</span>
+    <h2>Anime List</h2>
+    <div id="anime-list-wrapper">
+      <div class="list" id="all-anime-list" style="flex-wrap: wrap; justify-content: center;"></div>
+      <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+        <button id="prevAnimePageBtn" onclick="changeAnimePage(-1)">Previous</button>
+        <span id="anime-page-indicator" style="margin: 0 10px;">Page 1</span>
+        <button id="nextAnimePageBtn" onclick="changeAnimePage(1)">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-</html>
+<footer class="footer">
+  <div class="footer-content">
+    <p><i class="fas fa-exclamation-triangle"></i> DISCLAIMER</p>
+    <p>This website's server has no files on it. Only content from third-party websites and services is displayed on this website. We have no control over or endorsement of any of the products, services, or material provided by these websites.</p>
+    </div>
+  </div>
+</footer>
+
+  <div id="loader" style="display: none;">
+  <div class="spinner"></div>
+</div>
+</body>
