@@ -1,4 +1,3 @@
-const API_KEY = '913219c9e9d90cf47023e3599324e1f2';
 const BASE_URL = 'https://tmdb-proxy.nardoski.workers.dev'; // ⬅️ Replace with your real Worker URL
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
 let currentItem;
