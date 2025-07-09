@@ -45,6 +45,7 @@ async function fetchEpisodes(tvId) {
 function displayBanner(item) {
   document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
   document.getElementById('banner-title').textContent = item.title || item.name;
+  document.getElementById('banner-description').textContent = item.overview || '';
 }
 
 function displayList(items, containerId) {
