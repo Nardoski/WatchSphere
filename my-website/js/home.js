@@ -4,6 +4,9 @@ let currentItem;
 let currentMoviePage = 1;
 let currentTVPage = 1;
 let currentAnimePage = 1;
+let allEpisodes = [];
+let currentEpisodePage = 1;
+const episodesPerPage = 50;
 const maxMoviePages = 500;
 
 function showLoader() {
@@ -32,15 +35,6 @@ async function fetchTrendingAnime() {
   return allResults;
 }
 
-async function fetchEpisodes(tvId) {
-  const seasonRes = await fetch(`${BASE_URL}/?endpoint=/tv/${tvId}`);
-  const seasonData = await seasonRes.json();
-  const lastSeason = seasonData.number_of_seasons;
-
-  const episodeRes = await fetch(`${BASE_URL}/?endpoint=/tv/${tvId}/season/${lastSeason}`);
-  const episodeData = await episodeRes.json();
-  return episodeData.episodes || [];
-}
 
 function displayBanner(item) {
   document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
@@ -59,6 +53,39 @@ function displayList(items, containerId) {
   });
 }
 
+function renderEpisodesPage() {
+  const list = document.getElementById('episodes-list');
+  const pageIndicator = document.getElementById('episode-page-indicator');
+  const prevBtn = document.getElementById('prevEpisodePageBtn');
+  const nextBtn = document.getElementById('nextEpisodePageBtn');
+
+  list.innerHTML = '';
+  const start = (currentEpisodePage - 1) * episodesPerPage;
+  const end = start + episodesPerPage;
+  const pageEpisodes = allEpisodes.slice(start, end);
+
+  pageEpisodes.forEach(ep => {
+    const li = document.createElement('li');
+    li.textContent = `S${ep.season_number} E${ep.episode_number}: ${ep.name}`;
+    li.style.cursor = 'pointer';
+    li.style.color = '#00aced';
+    li.style.marginBottom = '8px';
+    li.onclick = () => {
+      changeServer(ep.season_number, ep.episode_number);
+    };
+    list.appendChild(li);
+  });
+
+  pageIndicator.textContent = `Page ${currentEpisodePage}`;
+  prevBtn.disabled = currentEpisodePage === 1;
+  nextBtn.disabled = end >= allEpisodes.length;
+}
+
+function changeEpisodePage(delta) {
+  currentEpisodePage += delta;
+  renderEpisodesPage();
+}
+
 async function showDetails(item) {
   showLoader();
   try {
@@ -72,21 +99,27 @@ async function showDetails(item) {
 
     const isAnime = item.media_type === "tv" || item.original_language === "ja";
     const episodesContainer = document.getElementById('episodes-container');
-    const episodesList = document.getElementById('episodes-list');
+
     if (isAnime) {
-      const episodes = await fetchEpisodes(item.id);
-      episodesList.innerHTML = '';
-      episodes.forEach(ep => {
-        const li = document.createElement('li');
-        li.textContent = `Episode ${ep.episode_number}: ${ep.name}`;
-        li.style.cursor = 'pointer';
-        li.style.color = '#00aced';
-        li.style.marginBottom = '8px';
-        li.onclick = () => {
-          changeServer(ep.season_number, ep.episode_number);
-        };
-        episodesList.appendChild(li);
-      });
+      const tvInfoRes = await fetch(`${BASE_URL}/?endpoint=/tv/${item.id}`);
+      const tvInfo = await tvInfoRes.json();
+
+      allEpisodes = [];
+      for (let season = 1; season <= tvInfo.number_of_seasons; season++) {
+        const seasonRes = await fetch(`${BASE_URL}/?endpoint=/tv/${item.id}/season/${season}`);
+        const seasonData = await seasonRes.json();
+        if (seasonData.episodes) {
+          allEpisodes = allEpisodes.concat(
+            seasonData.episodes.map(ep => ({
+              ...ep,
+              season_number: season
+            }))
+          );
+        }
+      }
+
+      currentEpisodePage = 1;
+      renderEpisodesPage();
       episodesContainer.style.display = 'block';
     } else {
       episodesContainer.style.display = 'none';
