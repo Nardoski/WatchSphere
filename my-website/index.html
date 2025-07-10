@@ -73,9 +73,15 @@
       </div>
       <iframe id="modal-video" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
       <div id="episodes-container" style="margin-top: 20px; display: none;">
-      <h3>Episodes</h3>
-      <ul id="episodes-list" style="list-style: none; padding-left: 0;"></ul>
-    </div>
+  <h3>Episodes</h3>
+  <ul id="episodes-list" style="list-style: none; padding-left: 0;"></ul>
+  <div id="episodes-pagination" style="margin-top: 10px; text-align: center;">
+    <button id="prevEpisodePageBtn" onclick="changeEpisodePage(-1)">Previous</button>
+    <span id="episode-page-indicator" style="margin: 0 10px;">Page 1</span>
+    <button id="nextEpisodePageBtn" onclick="changeEpisodePage(1)">Next</button>
+  </div>
+</div>
+
     </div>
   </div>
 
