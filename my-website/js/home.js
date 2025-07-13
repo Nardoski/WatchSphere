@@ -37,9 +37,32 @@ async function fetchTrendingAnime() {
 
 
 function displayBanner(item) {
-  document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
+  currentItem = item;
+  const banner = document.getElementById('banner');
+  banner.style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
+
   document.getElementById('banner-title').textContent = item.title || item.name;
+  document.getElementById('banner-overview').textContent = item.overview || '';
+  updateIndicators();
 }
+
+function updateIndicators() {
+  const indicators = document.getElementById('banner-indicators');
+  indicators.innerHTML = '';
+
+  bannerItems.forEach((_, index) => {
+    const dot = document.createElement('span');
+    dot.classList.add('dot');
+    if (index === currentBannerIndex) dot.classList.add('active');
+    dot.onclick = () => {
+      currentBannerIndex = index;
+      displayBanner(bannerItems[currentBannerIndex]);
+      restartCarousel();
+    };
+    indicators.appendChild(dot);
+  });
+}
+
 
 function displayList(items, containerId) {
   const container = document.getElementById(containerId);
@@ -233,7 +256,10 @@ async function init() {
     const tvShows = await fetchTrending('tv');
     const anime = await fetchTrendingAnime();
 
-    displayBanner(movies[Math.floor(Math.random() * movies.length)]);
+    bannerItems = movies.slice(0, 10); // show top 10 only
+    displayBanner(bannerItems[0]);
+    startBannerCarousel();
+
     displayList(movies, 'movies-list');
     displayList(tvShows, 'tvshows-list');
     displayList(anime, 'anime-list');
@@ -243,6 +269,41 @@ async function init() {
 }
 
 init();
+
+let bannerItems = [];
+let currentBannerIndex = 0;
+let bannerInterval;
+
+function rotateBanner() {
+  if (!bannerItems.length) return;
+  currentBannerIndex = (currentBannerIndex + 1) % bannerItems.length;
+  displayBanner(bannerItems[currentBannerIndex]);
+}
+
+function prevBanner() {
+  currentBannerIndex = (currentBannerIndex - 1 + bannerItems.length) % bannerItems.length;
+  displayBanner(bannerItems[currentBannerIndex]);
+  restartCarousel();
+}
+
+function nextBanner() {
+  currentBannerIndex = (currentBannerIndex + 1) % bannerItems.length;
+  displayBanner(bannerItems[currentBannerIndex]);
+  restartCarousel();
+}
+
+function restartCarousel() {
+  stopBannerCarousel();
+  startBannerCarousel();
+}
+
+function startBannerCarousel() {
+  bannerInterval = setInterval(rotateBanner, 7000); // every 7 seconds
+}
+
+function stopBannerCarousel() {
+  clearInterval(bannerInterval);
+}
 
 function openMovieListModal() {
   document.getElementById('movie-list-modal').style.display = 'flex';
@@ -397,3 +458,33 @@ document.addEventListener('click', (e) => {
     menu.style.display = 'none';
   }
 });
+
+async function playTrailer() {
+  if (!currentItem) {
+    alert("No content selected.");
+    return;
+  }
+
+  const type = currentItem.media_type || (currentItem.first_air_date ? "tv" : "movie");
+
+  try {
+    const res = await fetch(`${BASE_URL}/?endpoint=/${type}/${currentItem.id}/videos`);
+    const data = await res.json();
+    const trailers = data.results.filter(
+      vid => vid.type === "Trailer" && vid.site === "YouTube"
+    );
+
+    if (trailers.length > 0) {
+      const trailerKey = trailers[0].key;
+      window.open(`https://www.youtube.com/watch?v=${trailerKey}`, "_blank");
+    } else {
+      alert("Trailer not available.");
+    }
+  } catch (e) {
+    console.error("Error fetching trailer:", e);
+    alert("Error loading trailer.");
+  }
+}
+
+document.getElementById('banner').addEventListener('mouseenter', stopBannerCarousel);
+document.getElementById('banner').addEventListener('mouseleave', startBannerCarousel);
