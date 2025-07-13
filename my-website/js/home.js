@@ -167,7 +167,7 @@ async function changeServer(overrideSeason = null, overrideEpisode = null) {
     return;
   }
 }
-    } else if (server === "player.videasy.net") {
+     else if (server === "player.videasy.net") {
     embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
 
 
