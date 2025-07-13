@@ -140,8 +140,6 @@ async function changeServer(overrideSeason = null, overrideEpisode = null) {
     } else {
       embedURL = `https://vidsrc.cc/v2/embed/${type}/${currentItem.id}`;
     }
-  } else if (server === "player.videasy.net") {
-    embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
   } else if (server === "vidsrc.xyz") {
   try {
     const res = await fetch(`${BASE_URL}/?endpoint=/${type}/${currentItem.id}/external_ids`);
@@ -169,6 +167,8 @@ async function changeServer(overrideSeason = null, overrideEpisode = null) {
     return;
   }
 }
+    } else if (server === "player.videasy.net") {
+    embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
 
 
   // ✅ Only set src if the URL is valid
