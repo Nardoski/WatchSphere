@@ -32,9 +32,19 @@
 </div>
 </div>
 
-  <div class="banner" id="banner">
+<div class="banner" id="banner">
+  <div class="banner-content">
     <h1 id="banner-title"></h1>
+    <p id="banner-overview"></p>
+    <div class="banner-buttons">
+      <button onclick="showDetails(currentItem)">▶ Watch Now</button>
+      <button onclick="playTrailer()">🎬 Trailer</button>
+    </div>
+    <div class="banner-indicators" id="banner-indicators"></div>
   </div>
+  <button class="banner-arrow left" onclick="prevBanner()">&#10094;</button>
+  <button class="banner-arrow right" onclick="nextBanner()">&#10095;</button>
+</div>
 
   <div class="row">
     <h2>Trending Movies</h2>
