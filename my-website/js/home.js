@@ -143,38 +143,36 @@ async function changeServer(overrideSeason = null, overrideEpisode = null) {
   } else if (server === "player.videasy.net") {
     embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
   } else if (server === "vidsrc.xyz") {
-  try {
-    const res = await fetch(`${BASE_URL}/?endpoint=/${type}/${currentItem.id}/external_ids`);
-    const data = await res.json();
-    console.log("Fetched external IDs:", data);
+    try {
+      const res = await fetch(`${BASE_URL}/?endpoint=/${type}/${currentItem.id}/external_ids`);
+      const data = await res.json();
+      const imdbID = data.imdb_id;
 
-    const imdbID = data.imdb_id;
-    console.log("VIDSRC IMDb ID:", imdbID);
-
-    if (!imdbID) {
-      console.error("IMDb ID not found.");
-      document.getElementById('modal-video').src = "";
-      return;
-    }
-
-    if (type === "movie") {
-      embedURL = `https://vidsrc.xyz/embed/movie/${imdbID}`;
-    } else {
-      if (overrideSeason !== null && overrideEpisode !== null) {
-        embedURL = `https://vidsrc.xyz/embed/tv/${imdbID}/${overrideSeason}-${overrideEpisode}`;
-      } else {
-        embedURL = `https://vidsrc.xyz/embed/tv/${imdbID}`;
+      if (!imdbID) {
+        console.error("IMDb ID not found.");
+        return; // stop if IMDb ID is missing
       }
-    }
 
-    console.log("Generated Embed URL:", embedURL);
-  } catch (e) {
-    console.error("Failed to fetch IMDb ID:", e);
-    document.getElementById('modal-video').src = "";
-    return;
+      if (type === "movie") {
+        embedURL = `https://vidsrc.xyz/embed/movie/${imdbID}`;
+      } else {
+        if (overrideSeason !== null && overrideEpisode !== null) {
+          embedURL = `https://vidsrc.xyz/embed/tv/${imdbID}/${overrideSeason}-${overrideEpisode}`;
+        } else {
+          embedURL = `https://vidsrc.xyz/embed/tv/${imdbID}`;
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch IMDb ID:", e);
+      return; // stop if fetch fails
+    }
+  }
+
+  // ✅ Only set iframe if embedURL was built
+  if (embedURL) {
+    document.getElementById('modal-video').src = embedURL;
   }
 }
-
 
   // ✅ Only set src if the URL is valid
   if (embedURL && embedURL.startsWith("https://")) {
