@@ -140,16 +140,11 @@ async function changeServer(overrideSeason = null, overrideEpisode = null) {
     } else {
       embedURL = `https://vidsrc.cc/v2/embed/${type}/${currentItem.id}`;
     }
-  } else if (server === "player.videasy.net") {
-    embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
   } else if (server === "vidsrc.xyz") {
   try {
     const res = await fetch(`${BASE_URL}/?endpoint=/${type}/${currentItem.id}/external_ids`);
     const data = await res.json();
-    console.log("Fetched external IDs:", data);
-
     const imdbID = data.imdb_id;
-    console.log("VIDSRC IMDb ID:", imdbID);
 
     if (!imdbID) {
       console.error("IMDb ID not found.");
@@ -167,14 +162,14 @@ async function changeServer(overrideSeason = null, overrideEpisode = null) {
       }
     }
 
-    console.log("Generated Embed URL:", embedURL);
   } catch (e) {
     console.error("Failed to fetch IMDb ID:", e);
     document.getElementById('modal-video').src = "";
     return;
   }
-}
-
+} else if (server === "player.videasy.net") {
+    embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
+  }
 
   // ✅ Only set src if the URL is valid
   if (embedURL && embedURL.startsWith("https://")) {
