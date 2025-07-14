@@ -1,556 +1,399 @@
-/* =============================
-   Variables and Base Styles
-============================= */
-:root {
-  --bg-dark: #111;
-  --bg-medium: #1e1e1e;
-  --bg-light: #2c2c2c;
-  --primary: #f44336;
-  --hover-bg: rgba(255, 255, 255, 0.1);
-  --text-light: #fff;
-  --text-muted: #ccc;
-  --highlight: #0af;
+const BASE_URL = 'https://tmdb-proxy.nardoski.workers.dev'; // ⬅️ Replace with your real Worker URL
+const IMG_URL = 'https://image.tmdb.org/t/p/original';
+let currentItem;
+let currentMoviePage = 1;
+let currentTVPage = 1;
+let currentAnimePage = 1;
+let allEpisodes = [];
+let currentEpisodePage = 1;
+const episodesPerPage = 50;
+const maxMoviePages = 500;
+
+function showLoader() {
+  document.getElementById('loader').style.display = 'flex';
+}
+function hideLoader() {
+  document.getElementById('loader').style.display = 'none';
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+async function fetchTrending(type) {
+  const res = await fetch(`${BASE_URL}/?endpoint=/trending/${type}/week`);
+  const data = await res.json();
+  return data.results;
 }
 
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
+async function fetchTrendingAnime() {
+  let allResults = [];
+  for (let page = 1; page <= 3; page++) {
+    const res = await fetch(`${BASE_URL}/?endpoint=/trending/tv/week&page=${page}`);
+    const data = await res.json();
+    const filtered = data.results.filter(item =>
+      item.original_language === 'ja' && item.genre_ids.includes(16)
+    );
+    allResults = allResults.concat(filtered);
+  }
+  return allResults;
 }
 
-@media (max-width: 480px) {
-  html {
-    font-size: 14px;
+
+function displayBanner(item) {
+  document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
+  document.getElementById('banner-title').textContent = item.title || item.name;
+}
+
+function displayList(items, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  items.forEach(item => {
+    const img = document.createElement('img');
+    img.src = `${IMG_URL}${item.poster_path}`;
+    img.alt = item.title || item.name;
+    img.onclick = () => showDetails(item);
+    container.appendChild(img);
+  });
+}
+
+function renderEpisodesPage() {
+  const list = document.getElementById('episodes-list');
+  const pageIndicator = document.getElementById('episode-page-indicator');
+  const prevBtn = document.getElementById('prevEpisodePageBtn');
+  const nextBtn = document.getElementById('nextEpisodePageBtn');
+
+  list.innerHTML = '';
+  const start = (currentEpisodePage - 1) * episodesPerPage;
+  const end = start + episodesPerPage;
+  const pageEpisodes = allEpisodes.slice(start, end);
+
+  pageEpisodes.forEach(ep => {
+    const li = document.createElement('li');
+    li.textContent = `S${ep.season_number} E${ep.episode_number}: ${ep.name}`;
+    li.style.cursor = 'pointer';
+    li.style.color = '#00aced';
+    li.style.marginBottom = '8px';
+    li.onclick = () => {
+      changeServer(ep.season_number, ep.episode_number);
+    };
+    list.appendChild(li);
+  });
+
+  pageIndicator.textContent = `Page ${currentEpisodePage}`;
+  prevBtn.disabled = currentEpisodePage === 1;
+  nextBtn.disabled = end >= allEpisodes.length;
+}
+
+function changeEpisodePage(delta) {
+  currentEpisodePage += delta;
+  renderEpisodesPage();
+}
+
+async function showDetails(item) {
+  showLoader();
+  try {
+    currentItem = item;
+    document.getElementById('modal-title').textContent = item.title || item.name;
+    document.getElementById('modal-description').textContent = item.overview;
+    document.getElementById('modal-image').src = `${IMG_URL}${item.poster_path}`;
+    document.getElementById('modal-rating').innerHTML = '★'.repeat(Math.round(item.vote_average / 2));
+    changeServer();
+    document.getElementById('modal').style.display = 'flex';
+
+    const isAnime = item.media_type === "tv" || item.original_language === "ja";
+    const episodesContainer = document.getElementById('episodes-container');
+
+    if (isAnime) {
+      const tvInfoRes = await fetch(`${BASE_URL}/?endpoint=/tv/${item.id}`);
+      const tvInfo = await tvInfoRes.json();
+
+      allEpisodes = [];
+      for (let season = 1; season <= tvInfo.number_of_seasons; season++) {
+        const seasonRes = await fetch(`${BASE_URL}/?endpoint=/tv/${item.id}/season/${season}`);
+        const seasonData = await seasonRes.json();
+        if (seasonData.episodes) {
+          allEpisodes = allEpisodes.concat(
+            seasonData.episodes.map(ep => ({
+              ...ep,
+              season_number: season
+            }))
+          );
+        }
+      }
+
+      currentEpisodePage = 1;
+      renderEpisodesPage();
+      episodesContainer.style.display = 'block';
+    } else {
+      episodesContainer.style.display = 'none';
+    }
+  } finally {
+    hideLoader();
   }
 }
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: var(--bg-dark);
-  color: var(--text-light);
-  line-height: 1.6;
-}
+async function changeServer(overrideSeason = null, overrideEpisode = null) {
+  const server = document.getElementById('server').value;
+  const type = currentItem.media_type === "movie" ? "movie" : "tv";
+  let embedURL = "";
 
-/* =============================
-   Reusable Utility Classes
-============================= */
-.rounded {
-  border-radius: 8px;
-}
+  if (server === "vidsrc.cc") {
+    if (overrideSeason !== null && overrideEpisode !== null) {
+      embedURL = `https://vidsrc.cc/v2/embed/${type}/${currentItem.id}/${overrideSeason}/${overrideEpisode}`;
+    } else {
+      embedURL = `https://vidsrc.cc/v2/embed/${type}/${currentItem.id}`;
+    }
+  } else if (server === "vidsrc.xyz") {
+  try {
+    const res = await fetch(`${BASE_URL}/?endpoint=/${type}/${currentItem.id}/external_ids`);
+    const data = await res.json();
+    const imdbID = data.imdb_id;
 
-.shadow {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
+    if (!imdbID) {
+      console.error("IMDb ID not found.");
+      document.getElementById('modal-video').src = "";
+      return;
+    }
 
-.text-center {
-  text-align: center;
-}
+    if (type === "movie") {
+      embedURL = `https://vidsrc.xyz/embed/movie/${imdbID}`;
+    } else {
+      if (overrideSeason !== null && overrideEpisode !== null) {
+        embedURL = `https://vidsrc.xyz/embed/tv/${imdbID}/${overrideSeason}-${overrideEpisode}`;
+      } else {
+        embedURL = `https://vidsrc.xyz/embed/tv/${imdbID}`;
+      }
+    }
 
-/* =============================
-   Navbar
-============================= */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: var(--bg-medium);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  flex-wrap: nowrap;
-  position: relative;
-}
+  } catch (e) {
+    console.error("Failed to fetch IMDb ID:", e);
+    document.getElementById('modal-video').src = "";
+    return;
+  }
+} else if (server === "player.videasy.net") {
+    embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
+  }
 
-.navbar img {
-  height: 40px;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.nav-links a {
-  color: var(--text-light);
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background 0.2s ease;
-}
-
-.nav-links a:hover {
-  background: var(--hover-bg);
-}
-
-/* =============================
-   Search Bar
-============================= */
-.search-bar {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  width: 280px;
-  background: var(--bg-light);
-  color: var(--text-light);
-  transition: box-shadow 0.3s ease, background 0.3s ease;
-}
-
-.search-bar:focus {
-  outline: none;
-  background: #333;
-  box-shadow: 0 0 0 2px #555;
-}
-
-/* =============================
-   Banner
-============================= */
-.banner {
-  height: 50vh;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  padding: 30px;
-}
-
-.banner h1 {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 15px 20px;
-  border-radius: 8px;
-  font-size: 2rem;
-}
-
-/* =============================
-   Rows and Lists
-============================= */
-.row {
-  margin: 30px 20px;
-}
-
-.row h2 {
-  margin-bottom: 15px;
-  font-size: 1.5rem;
-}
-
-.list {
-  display: flex;
-  overflow-x: auto;
-  gap: 15px;
-  padding-bottom: 10px;
-}
-
-.list img,
-.search-modal img,
-#all-movies-list img {
-  width: 150px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.list img:hover,
-.search-modal img:hover,
-#all-movies-list img:hover {
-  transform: scale(1.05);
-  filter: brightness(1.15);
-  z-index: 2;
-}
-
-.list::-webkit-scrollbar,
-.episode-list::-webkit-scrollbar {
-  height: 8px;
-}
-
-.list::-webkit-scrollbar-thumb,
-.episode-list::-webkit-scrollbar-thumb {
-  background: #444;
-  border-radius: 4px;
-}
-
-/* =============================
-   Modal
-============================= */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.modal-content {
-  background: var(--bg-medium);
-  padding: 25px;
-  width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  text-align: center;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  cursor: default;
-}
-
-.modal-body {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 20px;
-  cursor: default;
-}
-
-.modal-body img {
-  width: 30%;
-  border-radius: 8px;
-}
-
-.modal-text {
-  flex: 1;
-  text-align: left;
-  cursor: default;
-}
-
-.modal img {
-  width: 25%;
-  border-radius: 8px;
-}
-
-.stars {
-  color: gold;
-  font-size: 1.2rem;
-  margin: 5px 0;
-}
-
-.close {
-  position: absolute;
-  top: 12px;
-  right: 20px;
-  cursor: pointer;
-  font-size: 28px;
-  color: #f33;
-}
-
-/* =============================
-   Server Selector & Episode List
-============================= */
-.server-selector {
-  margin: 20px 0;
-  text-align: left;
-}
-
-.episode-list {
-  margin-top: 20px;
-  padding: 10px;
-  background: var(--bg-dark);
-  border-radius: 8px;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.episode-list h3 {
-  margin-bottom: 10px;
-  color: var(--text-light);
-}
-
-.episode-list ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.episode-list li {
-  margin-bottom: 5px;
-  cursor: pointer;
-  color: var(--highlight);
-}
-
-/* =============================
-   Search Modal
-============================= */
-.search-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.95);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 15;
-}
-
-.search-modal input {
-  width: 300px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: none;
-  background: var(--bg-light);
-  color: var(--text-light);
-  margin-bottom: 25px;
-}
-
-.search-modal input:focus {
-  outline: none;
-  background: #333;
-  box-shadow: 0 0 0 2px #666;
-}
-
-.search-modal .results {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-}
-
-.search-modal .close {
-  position: absolute;
-  top: 25px;
-  right: 35px;
-  font-size: 32px;
-  color: #f33;
-}
-
-/* =============================
-   Footer
-============================= */
-.footer {
-  background: var(--bg-medium);
-  color: var(--text-muted);
-  padding: 25px;
-  text-align: center;
-  margin-top: 50px;
-}
-
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-size: 0.95rem;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.footer-links a {
-  color: var(--primary);
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.footer-links a:hover {
-  color: var(--text-light);
-}
-
-/* =============================
-   Buttons & Controls
-============================= */
-button:focus {
-  outline: 2px solid var(--highlight);
-  outline-offset: 2px;
-}
-
-.pagination-buttons button {
-  padding: 8px 16px;
-  margin: 0 8px;
-  background-color: var(--primary);
-  color: var(--text-light);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.pagination-buttons button:hover:not(:disabled) {
-  background-color: #d32f2f;
-}
-
-.pagination-buttons button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
-}
-
-.hamburger {
-  background: none;
-  border: none;
-  color: var(--text-light);
-  font-size: 1.8rem;
-  cursor: pointer;
-  padding: 8px;
-  z-index: 3;
-}
-
-.hamburger-menu {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  background-color: var(--bg-medium);
-  border: 1px solid #444;
-  border-radius: 8px;
-  display: none;
-  flex-direction: column;
-  padding: 10px;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-.hamburger-menu button {
-  background: none;
-  border: none;
-  color: var(--text-light);
-  text-align: left;
-  font-size: 1rem;
-  padding: 8px 12px;
-  cursor: pointer;
-  width: 100%;
-}
-
-.hamburger-menu button:hover {
-  background: var(--hover-bg);
-}
-
-/* =============================
-   Loader
-============================= */
-#loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(17, 17, 17, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.spinner {
-  border: 8px solid #333;
-  border-top: 8px solid var(--primary);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  // ✅ Only set src if the URL is valid
+  if (embedURL && embedURL.startsWith("https://")) {
+    document.getElementById('modal-video').src = embedURL;
+  } else {
+    console.warn("Invalid embed URL:", embedURL);
+    document.getElementById('modal-video').src = "";
   }
 }
 
-/* =============================
-   Media Queries
-============================= */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal-video').src = '';
+  document.getElementById('episodes-list').innerHTML = '';
+}
+
+function openSearchModal() {
+  document.getElementById('search-modal').style.display = 'flex';
+  document.getElementById('search-input').focus();
+}
+
+function closeSearchModal() {
+  document.getElementById('search-modal').style.display = 'none';
+  document.getElementById('search-results').innerHTML = '';
+}
+
+async function searchTMDB() {
+  const query = document.getElementById('search-input').value;
+  if (!query.trim()) {
+    document.getElementById('search-results').innerHTML = '';
+    return;
   }
 
-  .nav-links {
-    display: none;
-  }
+  showLoader();
+  try {
+    const res = await fetch(`${BASE_URL}/?endpoint=/search/multi&query=${encodeURIComponent(query)}`);
+    const data = await res.json();
 
-  .hamburger {
-    top: 15px;
-    right: 15px;
-  }
-
-  .hamburger-menu {
-    top: 55px;
-    right: 15px;
-  }
-
-  .banner {
-    height: 30vh;
-    padding: 20px;
-  }
-
-  .modal-body {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .modal-body img {
-    width: 60%;
-  }
-
-  .modal-text {
-    text-align: center;
-  }
-
-  .list {
-    padding: 0 10px;
-  }
-
-  .list img {
-    width: 120px;
-  }
-
-  .search-modal input {
-    width: 90%;
-    margin-top: 50px;
-  }
-
-  .search-modal .results {
-    justify-content: center;
-    grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
-    overflow-x: auto;
-    padding: 10px 0;
+    const container = document.getElementById('search-results');
+    container.innerHTML = '';
+    data.results.forEach(item => {
+      if (!item.poster_path) return;
+      const img = document.createElement('img');
+      img.src = `${IMG_URL}${item.poster_path}`;
+      img.alt = item.title || item.name;
+      img.onclick = () => {
+        closeSearchModal();
+        showDetails(item);
+      };
+      container.appendChild(img);
+    });
+  } finally {
+    hideLoader();
   }
 }
 
-@media (max-width: 480px) {
-  .banner h1 {
-    font-size: 20px;
-    padding: 8px;
-  }
+async function init() {
+  showLoader();
+  try {
+    const movies = await fetchTrending('movie');
+    const tvShows = await fetchTrending('tv');
+    const anime = await fetchTrendingAnime();
 
-  .row h2 {
-    font-size: 18px;
-  }
-
-  .modal-content {
-    width: 95%;
-    padding: 15px;
-  }
-
-  .modal-body img {
-    width: 80%;
-  }
-
-  .search-modal .close {
-    font-size: 26px;
-    top: 15px;
-    right: 20px;
-  }
-
-  .footer-content {
-    font-size: 14px;
-  }
-
-  .footer-links {
-    flex-direction: row;
-    gap: 10px;
+    displayBanner(movies[Math.floor(Math.random() * movies.length)]);
+    displayList(movies, 'movies-list');
+    displayList(tvShows, 'tvshows-list');
+    displayList(anime, 'anime-list');
+  } finally {
+    hideLoader();
   }
 }
+
+init();
+
+function openMovieListModal() {
+  document.getElementById('movie-list-modal').style.display = 'flex';
+  currentMoviePage = 1;
+  loadAllMovies(currentMoviePage);
+}
+
+function closeMovieListModal() {
+  document.getElementById('movie-list-modal').style.display = 'none';
+}
+
+async function loadAllMovies(page = 1) {
+  showLoader();
+  try {
+    const container = document.getElementById('all-movies-list');
+    container.innerHTML = '';
+
+    const res = await fetch(`${BASE_URL}/?endpoint=/movie/popular&page=${page}`);
+    const data = await res.json();
+
+    data.results.forEach(movie => {
+      if (!movie.poster_path) return;
+      const img = document.createElement('img');
+      img.src = `${IMG_URL}${movie.poster_path}`;
+      img.alt = movie.title || movie.name;
+      img.onclick = () => {
+        closeMovieListModal();
+        movie.media_type = "movie";
+        showDetails(movie);
+      };
+      container.appendChild(img);
+    });
+
+    document.getElementById('movie-page-indicator').textContent = `Page ${page}`;
+    document.getElementById('prevPageBtn').disabled = (page === 1);
+    document.getElementById('nextPageBtn').disabled = (page === maxMoviePages);
+  } finally {
+    hideLoader();
+  }
+}
+
+function changeMoviePage(delta) {
+  currentMoviePage += delta;
+  if (currentMoviePage < 1) currentMoviePage = 1;
+  if (currentMoviePage > maxMoviePages) currentMoviePage = maxMoviePages;
+  loadAllMovies(currentMoviePage);
+}
+
+function openTVListModal() {
+  document.getElementById('tv-list-modal').style.display = 'flex';
+  currentTVPage = 1;
+  loadAllTVShows(currentTVPage);
+}
+
+function closeTVListModal() {
+  document.getElementById('tv-list-modal').style.display = 'none';
+}
+
+async function loadAllTVShows(page = 1) {
+  showLoader();
+  try {
+    const container = document.getElementById('all-tv-list');
+    container.innerHTML = '';
+
+    const res = await fetch(`${BASE_URL}/?endpoint=/tv/popular&page=${page}`);
+    const data = await res.json();
+
+    data.results.forEach(tv => {
+      if (!tv.poster_path) return;
+      const img = document.createElement('img');
+      img.src = `${IMG_URL}${tv.poster_path}`;
+      img.alt = tv.name || tv.title;
+      img.onclick = () => {
+        closeTVListModal();
+        tv.media_type = "tv";
+        showDetails(tv);
+      };
+      container.appendChild(img);
+    });
+
+    document.getElementById('tv-page-indicator').textContent = `Page ${page}`;
+    document.getElementById('prevTVPageBtn').disabled = (page === 1);
+    document.getElementById('nextTVPageBtn').disabled = (page === maxMoviePages);
+  } finally {
+    hideLoader();
+  }
+}
+
+function changeTVPage(delta) {
+  currentTVPage += delta;
+  if (currentTVPage < 1) currentTVPage = 1;
+  if (currentTVPage > maxMoviePages) currentTVPage = maxMoviePages;
+  loadAllTVShows(currentTVPage);
+}
+
+function openAnimeListModal() {
+  document.getElementById('anime-list-modal').style.display = 'flex';
+  currentAnimePage = 1;
+  loadAllAnime(currentAnimePage);
+}
+
+function closeAnimeListModal() {
+  document.getElementById('anime-list-modal').style.display = 'none';
+}
+
+function changeAnimePage(delta) {
+  currentAnimePage += delta;
+  if (currentAnimePage < 1) currentAnimePage = 1;
+  if (currentAnimePage > maxMoviePages) currentAnimePage = maxMoviePages;
+  loadAllAnime(currentAnimePage);
+}
+
+async function loadAllAnime(page = 1) {
+  showLoader();
+  try {
+    const container = document.getElementById('all-anime-list');
+    container.innerHTML = '';
+
+    const res = await fetch(`${BASE_URL}/?endpoint=/discover/tv&language=en-US&page=${page}&with_original_language=ja&with_genres=16&sort_by=popularity.desc`);
+    const data = await res.json();
+
+    data.results.forEach(anime => {
+      if (!anime.poster_path) return;
+      const img = document.createElement('img');
+      img.src = `${IMG_URL}${anime.poster_path}`;
+      img.alt = anime.name || anime.title;
+      img.onclick = () => {
+        closeAnimeListModal();
+        anime.media_type = "tv";
+        showDetails(anime);
+      };
+      container.appendChild(img);
+    });
+
+    document.getElementById('anime-page-indicator').textContent = `Page ${page}`;
+    document.getElementById('prevAnimePageBtn').disabled = (page === 1);
+    document.getElementById('nextAnimePageBtn').disabled = (page === maxMoviePages);
+  } finally {
+    hideLoader();
+  }
+}
+
+function toggleMenu() {
+  const menu = document.getElementById('hamburger-menu');
+  menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+}
+
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('hamburger-menu');
+  const hamburger = document.querySelector('.hamburger');
+  if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
