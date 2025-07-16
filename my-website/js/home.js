@@ -46,6 +46,7 @@ function displayList(items, containerId) {
   container.innerHTML = '';
   items.forEach(item => {
     const img = document.createElement('img');
+    img.loading = 'lazy';
     img.src = `${IMG_URL}${item.poster_path}`;
     img.alt = item.title || item.name;
     img.onclick = () => showDetails(item);
@@ -213,6 +214,7 @@ async function searchTMDB() {
     data.results.forEach(item => {
       if (!item.poster_path) return;
       const img = document.createElement('img');
+      img.loading = 'lazy';
       img.src = `${IMG_URL}${item.poster_path}`;
       img.alt = item.title || item.name;
       img.onclick = () => {
@@ -266,6 +268,7 @@ async function loadAllMovies(page = 1) {
     data.results.forEach(movie => {
       if (!movie.poster_path) return;
       const img = document.createElement('img');
+      img.loading = 'lazy';
       img.src = `${IMG_URL}${movie.poster_path}`;
       img.alt = movie.title || movie.name;
       img.onclick = () => {
@@ -313,6 +316,7 @@ async function loadAllTVShows(page = 1) {
     data.results.forEach(tv => {
       if (!tv.poster_path) return;
       const img = document.createElement('img');
+      img.loading = 'lazy';
       img.src = `${IMG_URL}${tv.poster_path}`;
       img.alt = tv.name || tv.title;
       img.onclick = () => {
@@ -367,6 +371,7 @@ async function loadAllAnime(page = 1) {
     data.results.forEach(anime => {
       if (!anime.poster_path) return;
       const img = document.createElement('img');
+      img.loading = 'lazy';
       img.src = `${IMG_URL}${anime.poster_path}`;
       img.alt = anime.name || anime.title;
       img.onclick = () => {
