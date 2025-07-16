@@ -180,51 +180,66 @@ async function showDetails(item) {
 async function changeServer(overrideSeason = null, overrideEpisode = null) {
   const server = document.getElementById('server').value;
   const type = currentItem.media_type === "movie" ? "movie" : "tv";
+  const episodesContainer = document.getElementById('episodes-container');
   let embedURL = "";
 
+  // 🔒 Hide episode list if server is Videasy
+  if (server === "player.videasy.net") {
+    episodesContainer.style.display = 'none';
+  } else if (
+    currentItem.media_type === "tv" ||
+    currentItem.original_language === "ja"
+  ) {
+    episodesContainer.style.display = 'block';
+  }
+
+  // 📺 Vidsrc.cc
   if (server === "vidsrc.cc") {
     if (overrideSeason !== null && overrideEpisode !== null) {
       embedURL = `https://vidsrc.cc/v2/embed/${type}/${currentItem.id}/${overrideSeason}/${overrideEpisode}`;
     } else {
       embedURL = `https://vidsrc.cc/v2/embed/${type}/${currentItem.id}`;
     }
+
+  // 📺 Vidsrc.xyz
   } else if (server === "vidsrc.xyz") {
-  try {
-    const res = await fetch(`${BASE_URL}/?endpoint=/${type}/${currentItem.id}/external_ids`);
-    const data = await res.json();
-    const imdbID = data.imdb_id;
+    try {
+      const res = await fetch(`${BASE_URL}/?endpoint=/${type}/${currentItem.id}/external_ids`);
+      const data = await res.json();
+      const imdbID = data.imdb_id;
 
-    if (!imdbID) {
-      console.error("IMDb ID not found.");
-      document.getElementById('modal-video').src = "";
-      return;
-    }
+      if (!imdbID) {
+        console.error("IMDb ID not found.");
+        document.getElementById('modal-video').src = "";
+        return;
+      }
 
-    if (type === "movie") {
-      embedURL = `https://vidsrc.xyz/embed/movie/${imdbID}`;
-    } else {
-      if (overrideSeason !== null && overrideEpisode !== null) {
+      if (type === "movie") {
+        embedURL = `https://vidsrc.xyz/embed/movie/${imdbID}`;
+      } else if (overrideSeason !== null && overrideEpisode !== null) {
         embedURL = `https://vidsrc.xyz/embed/tv/${imdbID}/${overrideSeason}-${overrideEpisode}`;
       } else {
         embedURL = `https://vidsrc.xyz/embed/tv/${imdbID}`;
       }
+
+    } catch (e) {
+      console.error("Failed to fetch IMDb ID:", e);
+      document.getElementById('modal-video').src = "";
+      return;
     }
 
-  } catch (e) {
-    console.error("Failed to fetch IMDb ID:", e);
-    document.getElementById('modal-video').src = "";
-    return;
-  }
-} else if (server === "player.videasy.net") {
+  // 📺 Videasy (no episode support)
+  } else if (server === "player.videasy.net") {
     embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
   }
 
-  // ✅ Only set src if the URL is valid
+  // ✅ Safely update iframe src
+  const iframe = document.getElementById('modal-video');
   if (embedURL && embedURL.startsWith("https://")) {
-    document.getElementById('modal-video').src = embedURL;
+    iframe.src = embedURL;
   } else {
     console.warn("Invalid embed URL:", embedURL);
-    document.getElementById('modal-video').src = "";
+    iframe.src = "";
   }
 }
 
