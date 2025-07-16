@@ -1,11 +1,14 @@
 const BASE_URL = 'https://tmdb-proxy.nardoski.workers.dev'; // ⬅️ Replace with your real Worker URL
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
 let currentItem;
-let currentMoviePage = 1;
-let currentTVPage = 1;
-let currentAnimePage = 1;
 let allEpisodes = [];
 let currentEpisodePage = 1;
+let debounceTimer;
+const currentPages = {
+  movie: 1,
+  tv: 1,
+  anime: 1
+};
 const episodesPerPage = 50;
 const maxMoviePages = 500;
 
@@ -14,6 +17,50 @@ function showLoader() {
 }
 function hideLoader() {
   document.getElementById('loader').style.display = 'none';
+}
+
+async function loadContent({ 
+  endpoint, 
+  containerId, 
+  pageIndicatorId, 
+  prevBtnId, 
+  nextBtnId, 
+  page, 
+  mediaType, 
+  modalIdToClose 
+}) {
+  showLoader();
+  try {
+    const container = document.getElementById(containerId);
+    const pageIndicator = document.getElementById(pageIndicatorId);
+    const prevBtn = document.getElementById(prevBtnId);
+    const nextBtn = document.getElementById(nextBtnId);
+
+    container.innerHTML = '';
+
+    const res = await fetch(`${BASE_URL}/?endpoint=${endpoint}&page=${page}`);
+    const data = await res.json();
+
+    data.results.forEach(item => {
+      if (!item.poster_path) return;
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.src = `${IMG_URL}${item.poster_path}`;
+      img.alt = item.title || item.name;
+      img.onclick = () => {
+        document.getElementById(modalIdToClose).style.display = 'none';
+        item.media_type = mediaType;
+        showDetails(item);
+      };
+      container.appendChild(img);
+    });
+
+    pageIndicator.textContent = `Page ${page}`;
+    prevBtn.disabled = (page === 1);
+    nextBtn.disabled = (page === maxMoviePages);
+  } finally {
+    hideLoader();
+  }
 }
 
 async function fetchTrending(type) {
@@ -246,148 +293,77 @@ async function init() {
 
 init();
 
-function openMovieListModal() {
-  document.getElementById('movie-list-modal').style.display = 'flex';
-  currentMoviePage = 1;
-  loadAllMovies(currentMoviePage);
-}
+function openListModal(type) {
+  document.getElementById(`${type}-list-modal`).style.display = 'flex';
+  currentPages[type] = 1;
 
-function closeMovieListModal() {
-  document.getElementById('movie-list-modal').style.display = 'none';
-}
-
-async function loadAllMovies(page = 1) {
-  showLoader();
-  try {
-    const container = document.getElementById('all-movies-list');
-    container.innerHTML = '';
-
-    const res = await fetch(`${BASE_URL}/?endpoint=/movie/popular&page=${page}`);
-    const data = await res.json();
-
-    data.results.forEach(movie => {
-      if (!movie.poster_path) return;
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.src = `${IMG_URL}${movie.poster_path}`;
-      img.alt = movie.title || movie.name;
-      img.onclick = () => {
-        closeMovieListModal();
-        movie.media_type = "movie";
-        showDetails(movie);
-      };
-      container.appendChild(img);
-    });
-
-    document.getElementById('movie-page-indicator').textContent = `Page ${page}`;
-    document.getElementById('prevPageBtn').disabled = (page === 1);
-    document.getElementById('nextPageBtn').disabled = (page === maxMoviePages);
-  } finally {
-    hideLoader();
+  if (type === 'movie') {
+    loadAllMovies(currentPages.movie);
+  } else if (type === 'tv') {
+    loadAllTVShows(currentPages.tv);
+  } else if (type === 'anime') {
+    loadAllAnime(currentPages.anime);
   }
 }
 
-function changeMoviePage(delta) {
-  currentMoviePage += delta;
-  if (currentMoviePage < 1) currentMoviePage = 1;
-  if (currentMoviePage > maxMoviePages) currentMoviePage = maxMoviePages;
-  loadAllMovies(currentMoviePage);
+function closeListModal(type) {
+  document.getElementById(`${type}-list-modal`).style.display = 'none';
 }
 
-function openTVListModal() {
-  document.getElementById('tv-list-modal').style.display = 'flex';
-  currentTVPage = 1;
-  loadAllTVShows(currentTVPage);
+function loadAllMovies(page) {
+  loadContent({
+    endpoint: '/movie/popular',
+    containerId: 'all-movies-list',
+    pageIndicatorId: 'movie-page-indicator',
+    prevBtnId: 'prevPageBtn',
+    nextBtnId: 'nextPageBtn',
+    page,
+    mediaType: 'movie',
+    modalIdToClose: 'movie-list-modal'
+  });
 }
 
-function closeTVListModal() {
-  document.getElementById('tv-list-modal').style.display = 'none';
-}
+function changePage(type, delta) {
+  // Adjust page
+  currentPages[type] += delta;
 
-async function loadAllTVShows(page = 1) {
-  showLoader();
-  try {
-    const container = document.getElementById('all-tv-list');
-    container.innerHTML = '';
+  // Clamp the value between 1 and maxMoviePages
+  currentPages[type] = Math.max(1, Math.min(currentPages[type], maxMoviePages));
 
-    const res = await fetch(`${BASE_URL}/?endpoint=/tv/popular&page=${page}`);
-    const data = await res.json();
-
-    data.results.forEach(tv => {
-      if (!tv.poster_path) return;
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.src = `${IMG_URL}${tv.poster_path}`;
-      img.alt = tv.name || tv.title;
-      img.onclick = () => {
-        closeTVListModal();
-        tv.media_type = "tv";
-        showDetails(tv);
-      };
-      container.appendChild(img);
-    });
-
-    document.getElementById('tv-page-indicator').textContent = `Page ${page}`;
-    document.getElementById('prevTVPageBtn').disabled = (page === 1);
-    document.getElementById('nextTVPageBtn').disabled = (page === maxMoviePages);
-  } finally {
-    hideLoader();
+  // Call the right loader
+  if (type === 'movie') {
+    loadAllMovies(currentPages.movie);
+  } else if (type === 'tv') {
+    loadAllTVShows(currentPages.tv);
+  } else if (type === 'anime') {
+    loadAllAnime(currentPages.anime);
   }
 }
 
-function changeTVPage(delta) {
-  currentTVPage += delta;
-  if (currentTVPage < 1) currentTVPage = 1;
-  if (currentTVPage > maxMoviePages) currentTVPage = maxMoviePages;
-  loadAllTVShows(currentTVPage);
+function loadAllTVShows(page) {
+  loadContent({
+    endpoint: '/tv/popular',
+    containerId: 'all-tv-list',
+    pageIndicatorId: 'tv-page-indicator',
+    prevBtnId: 'prevTVPageBtn',
+    nextBtnId: 'nextTVPageBtn',
+    page,
+    mediaType: 'tv',
+    modalIdToClose: 'tv-list-modal'
+  });
 }
 
-function openAnimeListModal() {
-  document.getElementById('anime-list-modal').style.display = 'flex';
-  currentAnimePage = 1;
-  loadAllAnime(currentAnimePage);
-}
-
-function closeAnimeListModal() {
-  document.getElementById('anime-list-modal').style.display = 'none';
-}
-
-function changeAnimePage(delta) {
-  currentAnimePage += delta;
-  if (currentAnimePage < 1) currentAnimePage = 1;
-  if (currentAnimePage > maxMoviePages) currentAnimePage = maxMoviePages;
-  loadAllAnime(currentAnimePage);
-}
-
-async function loadAllAnime(page = 1) {
-  showLoader();
-  try {
-    const container = document.getElementById('all-anime-list');
-    container.innerHTML = '';
-
-    const res = await fetch(`${BASE_URL}/?endpoint=/discover/tv&language=en-US&page=${page}&with_original_language=ja&with_genres=16&sort_by=popularity.desc`);
-    const data = await res.json();
-
-    data.results.forEach(anime => {
-      if (!anime.poster_path) return;
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.src = `${IMG_URL}${anime.poster_path}`;
-      img.alt = anime.name || anime.title;
-      img.onclick = () => {
-        closeAnimeListModal();
-        anime.media_type = "tv";
-        showDetails(anime);
-      };
-      container.appendChild(img);
-    });
-
-    document.getElementById('anime-page-indicator').textContent = `Page ${page}`;
-    document.getElementById('prevAnimePageBtn').disabled = (page === 1);
-    document.getElementById('nextAnimePageBtn').disabled = (page === maxMoviePages);
-  } finally {
-    hideLoader();
-  }
+function loadAllAnime(page) {
+  loadContent({
+    endpoint: '/discover/tv&language=en-US&with_original_language=ja&with_genres=16&sort_by=popularity.desc',
+    containerId: 'all-anime-list',
+    pageIndicatorId: 'anime-page-indicator',
+    prevBtnId: 'prevAnimePageBtn',
+    nextBtnId: 'nextAnimePageBtn',
+    page,
+    mediaType: 'tv',
+    modalIdToClose: 'anime-list-modal'
+  });
 }
 
 function toggleMenu() {
@@ -402,3 +378,12 @@ document.addEventListener('click', (e) => {
     menu.style.display = 'none';
   }
 });
+
+function handleSearchInput() {
+  debounce(() => searchTMDB(), 300);
+}
+
+function debounce(callback, delay = 300) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(callback, delay);
+}
