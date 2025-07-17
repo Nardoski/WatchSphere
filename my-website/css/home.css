@@ -247,7 +247,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  z-index: 15;
+  z-index: 100;
 }
 
 .search-modal input {
