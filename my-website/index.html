@@ -51,23 +51,33 @@
 </head>
 
 <body>
- <div class="navbar">
+<div class="navbar">
   <a href="index.html">
     <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
   </a>
-<!-- place inside .navbar, NOT inside .nav-links -->
-<button class="hamburger" onclick="toggleMenu()">
-  <i class="fas fa-bars"></i>
-</button>
 
-<div id="hamburger-menu" class="hamburger-menu">
-  <button onclick="openSearchModal()"><i class="fas fa-search"></i> Search</button>
-  <button onclick="openListModal('movie')"><i class="fas fa-film"></i> Movie List</button>
-  <button onclick="openListModal('tv')"><i class="fas fa-tv"></i> TV Shows List</button>
-  <button onclick="openListModal('anime')"><i class="fas fa-dragon"></i> Anime List</button>
+  <!-- 🔹 DESKTOP MENU (Visible only on desktop) -->
+  <div class="nav-links">
+    <button onclick="openSearchModal()"><i class="fas fa-search"></i> Search</button>
+    <button onclick="openListModal('movie')"><i class="fas fa-film"></i> Movies</button>
+    <button onclick="openListModal('tv')"><i class="fas fa-tv"></i> TV Shows</button>
+    <button onclick="openListModal('anime')"><i class="fas fa-dragon"></i> Anime</button>
+  </div>
 
+  <!-- 🔸 MOBILE HAMBURGER -->
+  <button class="hamburger" onclick="toggleMenu()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- 🔸 MOBILE MENU (hidden by default, toggled by JS) -->
+  <div id="hamburger-menu" class="hamburger-menu">
+    <button onclick="openSearchModal()"><i class="fas fa-search"></i> Search</button>
+    <button onclick="openListModal('movie')"><i class="fas fa-film"></i> Movies</button>
+    <button onclick="openListModal('tv')"><i class="fas fa-tv"></i> TV Shows</button>
+    <button onclick="openListModal('anime')"><i class="fas fa-dragon"></i> Anime</button>
+  </div>
 </div>
-</div>
+
 
   <div class="banner" id="banner">
     <h1 id="banner-title"></h1>
@@ -83,6 +93,18 @@
   <p>
     Browse through curated categories, discover hidden gems, and stream with ease. New content is added daily from trusted sources.
   </p>
+</section>
+  
+  <section class="blog-preview" style="padding: 20px;">
+  <h2>Latest Articles</h2>
+  <article style="margin-bottom: 15px;">
+    <h3>Top 10 Anime Series to Watch in 2025</h3>
+    <p>Looking for your next binge-worthy anime? Here’s a curated list of the most exciting titles this year... <a href="#">Read more</a></p>
+  </article>
+  <article>
+    <h3>How WatchSphere Works</h3>
+    <p>Learn how we help you stream content without hosting or storing any media files. <a href="#">Read more</a></p>
+  </article>
 </section>
 
   <div class="row">
@@ -188,6 +210,7 @@
 
 <footer class="footer">
   <div class="footer-content">
+    
     <div class="footer-links">
   <a href="about.html">About</a> |
   <a href="contact.html">Contact</a> |
