@@ -82,13 +82,38 @@ async function fetchTrendingAnime() {
   return allResults;
 }
 
-
 function displayBanner(item) {
+  const banner = document.getElementById('banner');
+  const overlay = document.getElementById('banner-overlay');
+  const player = document.getElementById('banner-player');
+  const iframe = document.getElementById('banner-video');
+
   document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
   document.getElementById('banner-title').textContent = item.title || item.name;
   const desc = item.overview || "Watch trending movies and shows on WatchSphere!";
   const bannerDesc = document.getElementById('banner-description');
   if (bannerDesc) bannerDesc.textContent = desc.length > 200 ? desc.slice(0, 200) + '...' : desc;
+
+  currentItem = item;
+
+  // "Play" expands the banner
+  document.getElementById('play-btn').onclick = () => {
+    overlay.style.display = "none";
+    player.style.display = "block";
+
+    const type = item.media_type === "movie" ? "movie" : "tv";
+    const server = document.getElementById('server')?.value || "vidsrc.cc";
+
+    let embedURL = `https://vidsrc.cc/v2/embed/${type}/${item.id}`;
+    if (server === "player.videasy.net") {
+      embedURL = `https://player.videasy.net/${type}/${item.id}`;
+    }
+
+    iframe.src = embedURL;
+  };
+
+  // "More Info" still opens the full details modal
+  document.getElementById('info-btn').onclick = () => showDetails(item);
 }
 
 function displayList(items, containerId) {
@@ -405,3 +430,9 @@ function debounce(callback, delay = 300) {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(callback, delay);
 }
+
+document.getElementById('close-player').onclick = () => {
+  document.getElementById('banner-player').style.display = 'none';
+  document.getElementById('banner-video').src = '';
+  document.getElementById('banner-overlay').style.display = 'flex';
+};
