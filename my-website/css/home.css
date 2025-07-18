@@ -430,9 +430,10 @@ body {
   }
 
   .banner-carousel {
-    height: 65vh !important;
-    max-height: 450px !important;
-    min-height: 300px !important;
+    position: relative;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
   }
 
   .search-modal .results {
