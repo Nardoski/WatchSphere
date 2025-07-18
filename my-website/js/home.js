@@ -4,6 +4,7 @@ let currentItem;
 let allEpisodes = [];
 let currentEpisodePage = 1;
 let debounceTimer;
+let carouselIndex = 0;
 const currentPages = {
   movie: 1,
   tv: 1,
@@ -82,39 +83,37 @@ async function fetchTrendingAnime() {
   return allResults;
 }
 
-function displayBanner(item) {
-  const banner = document.getElementById('banner');
-  const overlay = document.getElementById('banner-overlay');
-  const player = document.getElementById('banner-player');
-  const iframe = document.getElementById('banner-video');
+function displayBannerCarousel(items) {
+  const bannerContainer = document.getElementById('banner-carousel');
+  bannerContainer.innerHTML = ''; // clear previous
 
-  document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
-  document.getElementById('banner-title').textContent = item.title || item.name;
-  const desc = item.overview || "Watch trending movies and shows on WatchSphere!";
-  const bannerDesc = document.getElementById('banner-description');
-  if (bannerDesc) bannerDesc.textContent = desc.length > 200 ? desc.slice(0, 200) + '...' : desc;
+  items.slice(0, 5).forEach((item, index) => {
+    const slide = document.createElement('div');
+    slide.className = 'carousel-slide';
+    if (index === 0) slide.classList.add('active');
+    slide.style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
 
-  currentItem = item;
+    const overlay = document.createElement('div');
+    overlay.className = 'carousel-overlay';
 
-  // "Play" expands the banner
-  document.getElementById('play-btn').onclick = () => {
-    overlay.style.display = "none";
-    player.style.display = "block";
+    overlay.innerHTML = `
+      <div class="carousel-title">${item.title || item.name}</div>
+      <div class="carousel-description">
+        ${(item.overview || '').slice(0, 200)}...
+      </div>
+      <div class="carousel-buttons">
+        <button onclick="playInline('${item.media_type}', ${item.id})"><i class="fas fa-play"></i> Play</button>
+        <button onclick='showDetails(${JSON.stringify(item)})'><i class="fas fa-info-circle"></i> More Info</button>
+      </div>
+    `;
 
-    const type = item.media_type === "movie" ? "movie" : "tv";
-    const server = document.getElementById('server')?.value || "vidsrc.cc";
+    slide.appendChild(overlay);
+    bannerContainer.appendChild(slide);
+  });
 
-    let embedURL = `https://vidsrc.cc/v2/embed/${type}/${item.id}`;
-    if (server === "player.videasy.net") {
-      embedURL = `https://player.videasy.net/${type}/${item.id}`;
-    }
-
-    iframe.src = embedURL;
-  };
-
-  // "More Info" still opens the full details modal
-  document.getElementById('info-btn').onclick = () => showDetails(item);
+  startCarousel();
 }
+
 
 function displayList(items, containerId) {
   const container = document.getElementById(containerId);
@@ -325,7 +324,7 @@ async function init() {
     const tvShows = await fetchTrending('tv');
     const anime = await fetchTrendingAnime();
 
-    displayBanner(movies[Math.floor(Math.random() * movies.length)]);
+    displayBannerCarousel(movies);
     displayList(movies, 'movies-list');
     displayList(tvShows, 'tvshows-list');
     displayList(anime, 'anime-list');
@@ -431,8 +430,49 @@ function debounce(callback, delay = 300) {
   debounceTimer = setTimeout(callback, delay);
 }
 
-document.getElementById('close-player').onclick = () => {
-  document.getElementById('banner-player').style.display = 'none';
-  document.getElementById('banner-video').src = '';
-  document.getElementById('banner-overlay').style.display = 'flex';
-};
+function startCarousel() {
+  const slides = document.querySelectorAll('.carousel-slide');
+  setInterval(() => {
+    slides[carouselIndex].classList.remove('active');
+    carouselIndex = (carouselIndex + 1) % slides.length;
+    slides[carouselIndex].classList.add('active');
+  }, 7000); // change slide every 7 seconds
+}
+
+function playInline(type, id) {
+  const embedURL = `https://vidsrc.cc/v2/embed/${type}/${id}`;
+
+  const banner = document.getElementById('banner-carousel');
+  banner.innerHTML = ''; // clear existing slides
+
+  // Create close button
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕ Close';
+  closeBtn.style.position = 'absolute';
+  closeBtn.style.top = '20px';
+  closeBtn.style.right = '20px';
+  closeBtn.style.zIndex = '10';
+  closeBtn.style.background = '#000';
+  closeBtn.style.color = '#fff';
+  closeBtn.style.padding = '10px';
+  closeBtn.style.border = 'none';
+  closeBtn.style.borderRadius = '6px';
+  closeBtn.style.cursor = 'pointer';
+
+  closeBtn.onclick = () => {
+    init(); // reload the banner carousel and other lists
+  };
+
+  // Create iframe player
+  const iframe = document.createElement('iframe');
+  iframe.src = embedURL;
+  iframe.allowFullscreen = true;
+  iframe.style.width = '100%';
+  iframe.style.height = '90vh';
+  iframe.style.border = 'none';
+
+  // Append elements
+  banner.appendChild(closeBtn);
+  banner.appendChild(iframe);
+}
+
