@@ -468,7 +468,7 @@ function playInline(type, id) {
   iframe.src = embedURL;
   iframe.allowFullscreen = true;
   iframe.style.width = '100%';
-  iframe.style.height = window.innerWidth <= 480 ? '50vh' : (window.innerWidth <= 768 ? '55vh' : '90vh');
+  iframe.style.height = '55vh'; // Or adjust based on screen
   iframe.style.border = 'none';
 
   // Append elements
