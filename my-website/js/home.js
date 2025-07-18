@@ -86,6 +86,9 @@ async function fetchTrendingAnime() {
 function displayBanner(item) {
   document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
   document.getElementById('banner-title').textContent = item.title || item.name;
+  const desc = item.overview || "Watch trending movies and shows on WatchSphere!";
+  const bannerDesc = document.getElementById('banner-description');
+  if (bannerDesc) bannerDesc.textContent = desc.length > 200 ? desc.slice(0, 200) + '...' : desc;
 }
 
 function displayList(items, containerId) {
