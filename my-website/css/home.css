@@ -156,6 +156,11 @@ body {
   color: var(--text-muted);
   margin-bottom: 20px;
   max-width: 600px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* limit to 4 lines */
+  -webkit-box-orient: vertical;
 }
 
 .carousel-buttons {
@@ -430,6 +435,11 @@ body {
     width: 90%;
   }
 
+  .banner-carousel {
+    height: 55vh !important;
+    max-height: 400px;
+  }
+
   .search-modal .results {
     justify-content: center;
     padding: 10px 0;
@@ -437,12 +447,19 @@ body {
 
   .carousel-overlay {
     background: linear-gradient(to top, rgba(17, 17, 17, 0.98), rgba(17, 17, 17, 0.6), transparent);
+    padding: 20px;
   }
   .carousel-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
   .carousel-description {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* limit to 4 lines */
+    -webkit-box-orient: vertical;
   }
   .carousel-buttons {
     flex-direction: column;
@@ -482,6 +499,25 @@ body {
     flex-direction: row;
     gap: 10px;
   }
+
+  .banner-carousel {
+    height: 50vh !important;
+    max-height: 350px;
+  }
+
+  .carousel-title {
+    font-size: 1.2rem;
+  }
+
+  .carousel-description {
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* limit to 4 lines */
+    -webkit-box-orient: vertical;
+  }
+  
 }
 
 .pagination-buttons {
