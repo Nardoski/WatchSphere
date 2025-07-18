@@ -118,20 +118,72 @@ body {
    Banner
 ============================= */
 .banner {
-  padding-top: 70px;
-  height: 50vh;
+  position: relative;
+  height: 90vh;
   background-size: cover;
-  background-position: center;
+  background-position: center center;
+  color: var(--text-light);
   display: flex;
-  align-items: center;
-  padding: 30px;
+  align-items: flex-end;
+  padding: 0;
+}
+
+.banner-overlay {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(17, 17, 17, 0.95) 10%, rgba(17, 17, 17, 0.5) 40%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+}
+
+.banner-content {
+  padding: 40px 60px;
+  max-width: 700px;
 }
 
 .banner h1 {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 15px 20px;
-  border-radius: 8px;
-  font-size: 2rem;
+font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.banner p {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.banner-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.banner-buttons button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.banner-buttons button:first-child {
+  background-color: var(--primary);
+  color: white;
+}
+
+.banner-buttons button:first-child:hover {
+  background-color: #d32f2f;
+}
+
+.banner-buttons button:last-child {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.banner-buttons button:last-child:hover {
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 /* =============================
@@ -384,6 +436,27 @@ body {
   .search-modal .results {
     justify-content: center;
     padding: 10px 0;
+  }
+  
+  .banner-content {
+    padding: 30px 20px;
+  }
+
+  .banner h1 {
+    font-size: 2rem;
+  }
+
+  .banner p {
+    font-size: 1rem;
+  }
+
+  .banner-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .banner-buttons button {
+    width: 100%;
   }
 }
 
