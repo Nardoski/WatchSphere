@@ -429,7 +429,7 @@ body {
     width: 90%;
   }
 
-  .banner-carousel {
+  section.banner-carousel {
     height: 65vh !important;
     max-height: 450px !important;
     min-height: 300px !important;
@@ -499,7 +499,7 @@ body {
     gap: 10px;
   }
 
-  .banner-carousel {
+  section.banner-carousel {
     height: 60vh !important;
     max-height: 420px !important;
     min-height: 300px !important;
