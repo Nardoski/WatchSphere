@@ -20,12 +20,6 @@ html {
   scroll-behavior: smooth;
 }
 
-@media (max-width: 480px) {
-  html {
-    font-size: 14px;
-  }
-}
-
 body {
   font-family: 'Segoe UI', sans-serif;
   background: var(--bg-dark);
@@ -473,6 +467,10 @@ body {
 
 
 @media (max-width: 480px) {
+   html {
+    font-size: 14px;
+  }
+  
   .banner h1 {
     font-size: 20px;
     padding: 8px;
