@@ -447,7 +447,7 @@ body {
 
   .carousel-overlay {
     background: linear-gradient(to top, rgba(17, 17, 17, 0.98), rgba(17, 17, 17, 0.6), transparent);
-    padding: 20px;
+    padding: 10px;
   }
   .carousel-title {
     font-size: 1.5rem;
