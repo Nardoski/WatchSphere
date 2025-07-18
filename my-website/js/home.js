@@ -468,6 +468,7 @@ function playInline(type, id) {
   iframe.src = embedURL;
   iframe.allowFullscreen = true;
   iframe.style.width = '100%';
+  iframe.style.height = '100%';
   iframe.style.border = 'none';
 
   // Append elements
