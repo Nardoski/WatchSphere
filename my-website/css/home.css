@@ -436,7 +436,7 @@ body {
   }
 
   .banner-carousel {
-    height: 55vh !important;
+    height: 70vh !important;
     max-height: 400px;
   }
 
@@ -450,10 +450,10 @@ body {
     padding: 20px;
   }
   .carousel-title {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
   .carousel-description {
-    font-size: 0.9rem;
+    font-size: 1.0rem;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
