@@ -114,87 +114,73 @@ body {
   background: var(--hover-bg);
 }
 
-/* =============================
-   Banner
-============================= */
-.banner {
+.banner-carousel {
   position: relative;
   width: 100%;
-  background-size: cover;
-  background-position: center;
   height: 90vh;
-  color: white;
   overflow: hidden;
-  transition: height 0.3s ease;
 }
 
-.banner-overlay {
+.carousel-slide {
+  position: absolute;
+  top: 0; left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top, rgba(17, 17, 17, 0.95) 10%, rgba(17, 17, 17, 0.5) 40%, transparent 100%);
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
   display: flex;
   align-items: flex-end;
 }
 
-.banner-content {
-  padding: 40px 60px;
-  max-width: 700px;
+.carousel-slide.active {
+  opacity: 1;
+  z-index: 1;
 }
 
-.banner h1 {
-  font-size: 3rem;
+.carousel-overlay {
+  width: 100%;
+  background: linear-gradient(to top, rgba(17, 17, 17, 0.95), rgba(17, 17, 17, 0.5), transparent);
+  padding: 40px 60px;
+}
+
+.carousel-title {
+  font-size: 2.5rem;
+  font-weight: bold;
   margin-bottom: 15px;
 }
 
-.banner p {
+.carousel-description {
   font-size: 1.2rem;
   color: var(--text-muted);
-  max-width: 600px;
   margin-bottom: 20px;
+  max-width: 600px;
 }
 
-.banner-buttons {
+.carousel-buttons {
   display: flex;
   gap: 15px;
 }
 
-.banner-buttons button {
+.carousel-buttons button {
   padding: 12px 24px;
   font-size: 1rem;
-  font-weight: bold;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
   transition: background 0.3s ease;
 }
 
-.banner-buttons button:first-child {
+.carousel-buttons button:first-child {
   background-color: var(--primary);
   color: white;
 }
 
-.banner-buttons button:first-child:hover {
-  background-color: #d32f2f;
-}
-
-.banner-buttons button:last-child {
+.carousel-buttons button:last-child {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
-}
-
-.banner-buttons button:last-child:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
-
-.banner-player {
-  width: 100%;
-  height: 90vh;
-}
-
-.banner-player iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
 }
 
 /* =============================
@@ -481,7 +467,25 @@ body {
   .banner-player {
     height: 65vh;
   }
+  .carousel-overlay {
+    background: linear-gradient(to top, rgba(17, 17, 17, 0.98), rgba(17, 17, 17, 0.6), transparent);
+  }
+  .carousel-title {
+    font-size: 1.5rem;
+  }
+  .carousel-description {
+    font-size: 1rem;
+  }
+  .carousel-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .carousel-buttons button {
+    width: 100%;
+  }
 }
+
+
 
 @media (max-width: 480px) {
   .banner h1 {
