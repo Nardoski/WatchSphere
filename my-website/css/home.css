@@ -435,38 +435,6 @@ body {
     padding: 10px 0;
   }
 
-  .banner {
-    height: 65vh; /* smaller height for mobile */
-    align-items: flex-end;
-  }
-  
-  .banner-content {
-    padding: 20px;
-  }
-
-  .banner h1 {
-    font-size: 1.8rem;
-  }
-
-  .banner p {
-    font-size: 0.95rem;
-  }
-
-  .banner-buttons {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .banner-buttons button {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-  }
-  
-  .banner-player {
-    height: 65vh;
-  }
   .carousel-overlay {
     background: linear-gradient(to top, rgba(17, 17, 17, 0.98), rgba(17, 17, 17, 0.6), transparent);
   }
