@@ -126,6 +126,8 @@ body {
   display: flex;
   align-items: flex-end;
   padding: 0;
+  max-height: 500px;
+  transition: height 0.3s ease;
 }
 
 .banner-overlay {
@@ -437,26 +439,34 @@ font-size: 3rem;
     justify-content: center;
     padding: 10px 0;
   }
+
+  .banner {
+    height: 65vh; /* smaller height for mobile */
+    align-items: flex-end;
+  }
   
   .banner-content {
-    padding: 30px 20px;
+    padding: 20px;
   }
 
   .banner h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .banner p {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .banner-buttons {
     flex-direction: column;
     gap: 10px;
+    width: 100%;
   }
 
   .banner-buttons button {
     width: 100%;
+    padding: 10px;
+    font-size: 1rem;
   }
 }
 
