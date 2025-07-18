@@ -432,6 +432,7 @@ body {
   .banner-carousel {
     height: 65vh !important;
     max-height: 450px !important;
+    min-height: unset !important;
   }
 
   .search-modal .results {
@@ -501,6 +502,7 @@ body {
   .banner-carousel {
     height: 60vh !important;
     max-height: 420px !important;
+    min-height: unset !important;
   }
 
   .carousel-title {
