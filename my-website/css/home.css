@@ -219,28 +219,26 @@ body {
 }
 
 .carousel-dots {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 20px;
   gap: 10px;
-  z-index: 5;
 }
 
 .carousel-dot {
   width: 10px;
   height: 10px;
+  background-color: #999;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.5);
+  transition: background-color 0.3s ease;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .carousel-dot.active {
   background-color: var(--primary);
   transform: scale(1.2);
 }
+
 
 /* =============================
    Intro and Blog Section
