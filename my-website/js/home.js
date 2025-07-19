@@ -33,6 +33,7 @@ function nextSlide() {
   slides[carouselIndex].classList.remove('active');
   carouselIndex = (carouselIndex + 1) % slides.length;
   slides[carouselIndex].classList.add('active');
+  updateDots();
 }
 
 function prevSlide() {
@@ -40,6 +41,15 @@ function prevSlide() {
   slides[carouselIndex].classList.remove('active');
   carouselIndex = (carouselIndex - 1 + slides.length) % slides.length;
   slides[carouselIndex].classList.add('active');
+  updateDots();
+}
+
+function updateDots() {
+  const dots = document.querySelectorAll('.carousel-dot');
+  dots.forEach(dot => dot.classList.remove('active'));
+  if (dots[carouselIndex]) {
+    dots[carouselIndex].classList.add('active');
+  }
 }
 
 function enableSwipeGesture() {
@@ -59,6 +69,14 @@ function enableSwipeGesture() {
       prevSlide();
     }
   });
+}
+
+function goToSlide(index) {
+  if (!slides?.length || index === carouselIndex) return;
+  slides[carouselIndex].classList.remove('active');
+  carouselIndex = index;
+  slides[carouselIndex].classList.add('active');
+  updateDots();
 }
 
 async function loadContent({ 
@@ -168,6 +186,22 @@ rightArrow.onclick = nextSlide;
 // Append to banner
 bannerCarousel.appendChild(leftArrow);
 bannerCarousel.appendChild(rightArrow);
+  
+  // --- Create Dots ---
+const dotsWrapper = document.createElement('div');
+dotsWrapper.className = 'carousel-dots';
+
+items.slice(0, 5).forEach((item, index) => {
+  const dot = document.createElement('div');
+  dot.className = 'carousel-dot';
+  if (index === 0) dot.classList.add('active');
+  dot.onclick = () => {
+    goToSlide(index);
+  };
+  dotsWrapper.appendChild(dot);
+});
+
+bannerContainer.appendChild(dotsWrapper);
 
   startCarousel();
   enableSwipeGesture();
