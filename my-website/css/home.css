@@ -514,6 +514,43 @@ body {
     flex-direction: row;
     gap: 10px;
   }
+  
+  .banner-carousel {
+    height: 75vh; /* slightly shorter for mobile */
+  }
+
+  .carousel-slide {
+    align-items: flex-end;
+  }
+
+  .carousel-overlay {
+    padding: 20px;
+    background: linear-gradient(to top, rgba(17, 17, 17, 0.98), rgba(17, 17, 17, 0.6), transparent);
+  }
+
+  .carousel-title {
+    font-size: 1.3rem;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .carousel-description {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    max-width: 100%;
+  }
+
+  .carousel-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .carousel-buttons button {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95rem;
+  }
 }
 
 .pagination-buttons {
