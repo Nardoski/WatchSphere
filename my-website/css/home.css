@@ -218,6 +218,30 @@ body {
   pointer-events: auto; /* allow clicking when visible */
 }
 
+.carousel-dots {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 5;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.carousel-dot.active {
+  background-color: var(--primary);
+  transform: scale(1.2);
+}
+
 /* =============================
    Intro and Blog Section
 ============================= */
