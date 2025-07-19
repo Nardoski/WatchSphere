@@ -1,652 +1,215 @@
-:root {
-  --bg-dark: #111;
-  --bg-medium: #1e1e1e;
-  --bg-light: #2c2c2c;
-  --primary: #f44336;
-  --hover-bg: rgba(255, 255, 255, 0.1);
-  --text-light: #fff;
-  --text-muted: #ccc;
-  --highlight: #0af;
-}
+<html lang="en">
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-
-@media (max-width: 480px) {
-  html {
-    font-size: 14px;
-  }
-}
-
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: var(--bg-dark);
-  color: var(--text-light);
-  line-height: 1.6;
-}
-
-/* =============================
-   Navbar
-============================= */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: var(--bg-medium);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  flex-wrap: nowrap;
-  position: relative;
-  z-index: 100;
-}
-
-.logo-img {
-  height: 40px;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.nav-links button {
-  background: none;
-  border: none;
-  color: var(--text-light);
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.nav-links button:hover {
-  background: var(--hover-bg);
-}
-
-/* Hamburger menu only visible on mobile */
-.hamburger {
-  display: none;
-  background: none;
-  border: none;
-  color: var(--text-light);
-  font-size: 1.8rem;
-  cursor: pointer;
-  padding: 8px;
-  z-index: 3;
-}
-
-.hamburger-menu {
-  display: none;
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  background-color: var(--bg-medium);
-  border: 1px solid #444;
-  border-radius: 8px;
-  flex-direction: column;
-  padding: 10px;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-.hamburger-menu button {
-  background: none;
-  border: none;
-  color: var(--text-light);
-  text-align: left;
-  font-size: 1rem;
-  padding: 8px 12px;
-  cursor: pointer;
-  width: 100%;
-}
-
-.hamburger-menu button:hover {
-  background: var(--hover-bg);
-}
-
-.banner-carousel {
-  position: relative;
-  width: 100%;
-  height: 90vh;
-  overflow: hidden;
-}
-
-.carousel-slide {
-  position: absolute;
-  z-index: 0;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-  display: flex;
-  align-items: flex-end;
-}
-
-.carousel-slide.active {
-  opacity: 1;
-  z-index: 1;
-}
-
-.carousel-overlay {
-  width: 100%;
-  background: linear-gradient(to top, rgba(17, 17, 17, 0.95), rgba(17, 17, 17, 0.5), transparent);
-  padding: 40px 60px;
-}
-
-.carousel-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 15px;
-  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.8);
-}
-
-.carousel-description {
-  font-size: 1.2rem;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-  max-width: 600px;
-  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.8);
-}
-
-.carousel-buttons {
-  display: flex;
-  gap: 15px;
-}
-
-.carousel-buttons button {
-  padding: 12px 24px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}
-
-.carousel-buttons button:first-child {
-  background-color: var(--primary);
-  color: white;
-}
-
-.carousel-buttons button:last-child {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  border: none;
-  font-size: 2rem;
-  padding: 10px 15px;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.carousel-arrow:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
-.carousel-arrow.left {
-  left: 20px;
-}
-.carousel-arrow.right {
-  right: 20px;
-}
-
-.banner-carousel:hover .carousel-arrow {
-  opacity: 1;
-  pointer-events: auto; /* allow clicking when visible */
-}
-
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  gap: 10px;
-}
-
-.carousel-dot {
-  width: 10px;
-  height: 10px;
-  background-color: #999;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-}
-
-.carousel-dot.active {
-  background-color: var(--primary);
-  transform: scale(1.2);
-}
-
-
-/* =============================
-   Intro and Blog Section
-============================= */
-.intro-text, .blog-preview {
-  padding: 20px;
-}
-
-.blog-preview article {
-  margin-bottom: 20px;
-}
-
-/* =============================
-   Rows & Lists
-============================= */
-.row {
-  margin: 30px 20px;
-}
-
-.row h2 {
-  margin-bottom: 15px;
-  font-size: 1.5rem;
-}
-
-.list {
-  display: flex;
-  overflow-x: auto;
-  gap: 15px;
-  padding-bottom: 10px;
-}
-
-.list img,
-.search-modal img {
-  width: 150px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.list img:hover,
-.search-modal img:hover {
-  transform: scale(1.05);
-  filter: brightness(1.15);
-  z-index: 2;
-}
-
-/* =============================
-   Modal
-============================= */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-}
-
-.modal-content {
-  background: var(--bg-medium);
-  padding: 25px;
-  width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  text-align: center;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  cursor: default;
-}
-
-.modal-body {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 20px;
-  cursor: default;
-}
-
-.modal-body img {
-  width: 30%;
-  border-radius: 8px;
-}
-
-.modal-text {
-  flex: 1;
-  text-align: left;
-}
-
-.stars {
-  color: gold;
-  font-size: 1.2rem;
-  margin: 5px 0;
-}
-
-/* =============================
-   Search Modal
-============================= */
-.search-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.95);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 100;
-}
-
-.search-modal input {
-  width: 300px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: none;
-  background: var(--bg-light);
-  color: var(--text-light);
-  margin-bottom: 25px;
-}
-
-.search-modal .results {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-}
-
-.search-modal .close {
-   position: absolute;
-  top: 15px;
-  right: 20px;
-  cursor: pointer;
-  font-size: 26px;
-  color: #f33;
-  z-index: 1;
-}
-
-.modal-content h2 {
-  padding-top: 30px;
-}
-
-/* =============================
-   Footer
-============================= */
-.footer {
-  background: var(--bg-medium);
-  color: var(--text-muted);
-  padding: 25px;
-  text-align: center;
-  margin-top: 50px;
-}
-
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-size: 0.95rem;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.footer-links a {
-  color: var(--highlight);
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.footer-links a:hover {
-  color: var(--text-light);
-  text-decoration: underline;
-}
-
-/* =============================
-   Loader
-============================= */
-#loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(17, 17, 17, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.spinner {
-  border: 8px solid #333;
-  border-top: 8px solid var(--primary);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
-
-/* =============================
-   Responsive
-============================= */
-@media (max-width: 768px) {
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  .nav-links {
-    display: none;
-  }
+  <title>WatchSphere - Watch Movies, TV Shows and Anime Online Free</title>
+  <meta name="description" content="Stream trending Movies, TV Shows, and Anime online for free on WatchSphere. No registration required. Updated daily with new content." />
+  <meta name="keywords" content="Watch movies online, stream TV shows, free anime streaming, trending movies, WatchSphere" />
+  <meta name="author" content="WatchSphere" />
+  <link rel="canonical" href="https://watchsphere.pages.dev/" />
 
-  .hamburger {
-    display: block;
-  }
+  <!-- Open Graph for Facebook, Discord, LinkedIn -->
+  <meta property="og:title" content="WatchSphere - Watch Movies, TV Shows and Anime Online Free" />
+  <meta property="og:description" content="Discover and stream popular movies, shows, and anime instantly. 100% free and always updated!" />
+  <meta property="og:image" content="https://watchsphere.pages.dev/WSLogo1.png" />
+  <meta property="og:url" content="https://watchsphere.pages.dev/" />
+  <meta property="og:type" content="website" />
 
-  .modal-body {
-    flex-direction: column;
-    align-items: center;
-  }
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="WatchSphere - Watch Movies, TV Shows and Anime Online Free" />
+  <meta name="twitter:description" content="Stream trending Movies, TV Shows, and Anime online for free. No signup. No hassle." />
+  <meta name="twitter:image" content="https://watchsphere.pages.dev/WSLogo1.png" />
 
-  .modal-body img {
-    width: 60%;
-  }
+  <!-- Favicons & Manifest -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="manifest" href="manifest.json">
 
-  .modal-text {
-    text-align: center;
-  }
+  <!-- Styles and Scripts -->
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="preload" href="css/home.css" as="style">
+  <link rel="preload" href="js/home.js" as="script">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script defer src="js/home.js"></script>
 
-  .list img {
-    width: 120px;
-  }
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoStreamingService",
+  "name": "WatchSphere",
+  "url": "https://watchsphere.pages.dev/",
+  "description": "Watch trending Movies, TV Shows, and Anime online for free.",
+  "logo": "https://watchsphere.pages.dev/WSLogo1.png",
+  "sameAs": [
+    "https://facebook.com/yourpage",
+    "https://twitter.com/yourprofile"
+  ]
+}
+</script>
+</head>
 
-  .search-modal input {
-    width: 90%;
-  }
+<body>
+<div class="navbar">
+  <a href="index.html">
+    <img src="WSLogo1.png" alt="WatchSphere Logo" class="logo-img" />
+  </a>
 
-  .search-modal .results {
-    justify-content: center;
-    padding: 10px 0;
-  }
+  <!-- 🔹 DESKTOP MENU (Visible only on desktop) -->
+  <div class="nav-links">
+    <button onclick="openSearchModal()"><i class="fas fa-search"></i> Search</button>
+    <button onclick="openListModal('movie')"><i class="fas fa-film"></i> Movies</button>
+    <button onclick="openListModal('tv')"><i class="fas fa-tv"></i> TV Shows</button>
+    <button onclick="openListModal('anime')"><i class="fas fa-dragon"></i> Anime</button>
+  </div>
 
-  .banner {
-    height: 65vh; /* smaller height for mobile */
-    align-items: flex-end;
-  }
+  <!-- 🔸 MOBILE HAMBURGER -->
+  <button class="hamburger" onclick="toggleMenu()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- 🔸 MOBILE MENU (hidden by default, toggled by JS) -->
+  <div id="hamburger-menu" class="hamburger-menu">
+    <button onclick="openSearchModal()"><i class="fas fa-search"></i> Search</button>
+    <button onclick="openListModal('movie')"><i class="fas fa-film"></i> Movies</button>
+    <button onclick="openListModal('tv')"><i class="fas fa-tv"></i> TV Shows</button>
+    <button onclick="openListModal('anime')"><i class="fas fa-dragon"></i> Anime</button>
+  </div>
+</div>
+
+  <section class="banner-carousel" id="banner-carousel">
+  <!-- Slides will be injected here dynamically by JS -->
+</section>
+
+  <section class="intro-text" style="padding: 20px;">
+  <h2>Welcome to WatchSphere</h2>
+  <p>
+    WatchSphere is your go-to platform to explore and stream the latest Movies, TV Shows, and Anime — all for free.
+    Enjoy content from across the world with no registration required.
+    From Hollywood hits to trending Japanese anime, we bring you instant access to everything you love.
+  </p>
+  <p>
+    Browse through curated categories, discover hidden gems, and stream with ease. New content is added daily from trusted sources.
+  </p>
+</section>
   
-  .banner-content {
-    padding: 20px;
-  }
+  <div class="row">
+    <h2>Popular Movies Right Now🔥</h2>
+    <div class="list" id="movies-list"></div>
+  </div>
 
-  .banner h1 {
-    font-size: 1.8rem;
-  }
+  <div class="row">
+    <h2>Top TV Shows🔥</h2>
+    <div class="list" id="tvshows-list"></div>
+  </div>
 
-  .banner p {
-    font-size: 0.95rem;
-  }
+  <div class="row">
+    <h2>Most Watched Anime🔥</h2>
+    <div class="list" id="anime-list"></div>
+  </div>
 
-  .banner-buttons {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()" style="color: red;">&times;</span>
+      <div class="modal-body">
+  <img id="modal-image" src="" alt="" />
+  <div class="modal-text">
+    <h2 id="modal-title"></h2>
+    <div class="stars" id="modal-rating"></div>
+    <p id="modal-description"></p>
+  </div>
+</div>
+      
+      <div class="server-selector">
+        <label for="server">Change Server:</label>
+        <select id="server" onchange="changeServer()">
+          <option value="vidsrc.cc">Vidsrc.cc</option>
+          <option value="vidsrc.xyz">Vidsrc.xyz</option>
+          <option value="player.videasy.net">Player.Videasy.net</option>
+        </select>
+      </div>
+      <iframe id="modal-video" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
+      <div id="episodes-container" style="margin-top: 20px; display: none;">
+  <h3>Episodes</h3>
+  <ul id="episodes-list" style="list-style: none; padding-left: 0;"></ul>
+  <div id="episodes-pagination" style="margin-top: 10px; text-align: center;">
+    <button id="prevEpisodePageBtn" onclick="changeEpisodePage(-1)">Previous</button>
+    <span id="episode-page-indicator" style="margin: 0 10px;">Page 1</span>
+    <button id="nextEpisodePageBtn" onclick="changeEpisodePage(1)">Next</button>
+  </div>
+</div>
 
-  .banner-buttons button {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-  }
+    </div>
+  </div>
+
+  <div class="search-modal" id="search-modal">
+    <span class="close" onclick="closeSearchModal()" style="color: red;">&times;</span>
+    <input type="text" id="search-input" placeholder="Search for a movie or show..." oninput="handleSearchInput()" />
+    <div class="results" id="search-results"></div>
+  </div>
   
-  .banner-player {
-    height: 65vh;
-  }
-  .carousel-overlay {
-    background: linear-gradient(to top, rgba(17, 17, 17, 0.98), rgba(17, 17, 17, 0.6), transparent);
-  }
-  .carousel-title {
-    font-size: 1.5rem;
-  }
-  .carousel-description {
-    font-size: 1rem;
-  }
-  .carousel-buttons {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .carousel-buttons button {
-    width: 100%;
-  }
-}
+  <div class="modal" id="movie-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeListModal('movie')" style="color: red;">&times;</span>
+    <h2>Movie Lists</h2>
+   <div id="movie-list-wrapper">
+  <div class="list" id="all-movies-list" style="flex-wrap: wrap; justify-content: center;"></div>
+  <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+    <button onclick="changePage('movie', -1)">Previous</button>
+    <span id="movie-page-indicator" style="margin: 0 10px;">Page 1</span>
+    <button onclick="changePage('movie', 1)">Next</button>
+  </div>
+</div>
 
-
-
-@media (max-width: 480px) {
-  .banner h1 {
-    font-size: 20px;
-    padding: 8px;
-  }
-
-  .row h2 {
-    font-size: 18px;
-  }
-
-  .modal-content {
-    width: 95%;
-    padding: 15px;
-  }
-
-  .modal-body img {
-    width: 80%;
-  }
-
-  .footer-content {
-    font-size: 14px;
-  }
-
-  .footer-links {
-    flex-direction: row;
-    gap: 10px;
-  }
+  </div>
+</div>
   
-  .banner-carousel {
-    height: 75vh; /* slightly shorter for mobile */
-  }
+  <div class="modal" id="tv-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeListModal('tv')" style="color: red;">&times;</span>
+    <h2>TV Show Lists</h2>
+    <div id="tv-list-wrapper">
+      <div class="list" id="all-tv-list" style="flex-wrap: wrap; justify-content: center;"></div>
+      <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+        <button onclick="changePage('tv', -1)">Previous</button>
+        <span id="tv-page-indicator" style="margin: 0 10px;">Page 1</span>
+        <button onclick="changePage('tv', 1)">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <div class="modal" id="anime-list-modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeListModal('anime')" style="color: red;">&times;</span>
+    <h2>Anime Lists</h2>
+    <div id="anime-list-wrapper">
+      <div class="list" id="all-anime-list" style="flex-wrap: wrap; justify-content: center;"></div>
+      <div class="pagination-buttons" style="margin-top: 20px; text-align: center;">
+        <button onclick="changePage('anime', -1)">Previous</button>
+        <span id="anime-page-indicator" style="margin: 0 10px;">Page 1</span>
+        <button onclick="changePage('anime', 1)">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  .carousel-slide {
-    align-items: flex-end;
-  }
+<footer class="footer">
+  <div class="footer-content">
+    
+    <div class="footer-links">
+  <a href="about.html">About</a> |
+  <a href="contact.html">Contact</a> |
+  <a href="privacy.html">Privacy</a> |
+  <a href="terms.html">Terms</a>
+</div>
+    <p>© 2025 WatchSphere. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
 
-  .carousel-overlay {
-    padding: 20px;
-    background: linear-gradient(to top, rgba(17, 17, 17, 0.98), rgba(17, 17, 17, 0.6), transparent);
-  }
-
-  .carousel-title {
-    font-size: 1.3rem;
-    line-height: 1.2;
-    margin-bottom: 10px;
-  }
-
-  .carousel-description {
-    font-size: 0.95rem;
-    line-height: 1.4;
-    margin-bottom: 15px;
-    max-width: 100%;
-  }
-
-  .carousel-buttons {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .carousel-buttons button {
-    width: 100%;
-    padding: 10px;
-    font-size: 0.95rem;
-  }
-}
-
-.pagination-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.pagination-buttons button {
-  padding: 10px 18px;
-  background-color: var(--primary);
-  color: var(--text-light);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease;
-}
-
-.pagination-buttons button:hover {
-  background-color: #d32f2f;
-}
-
-.pagination-buttons button:disabled {
-  background-color: #444;
-  cursor: not-allowed;
-}
-
-.close {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  cursor: pointer;
-  font-size: 26px;
-  color: #f33;
-  z-index: 1;
-}
-
+  <div id="loader" style="display: none;">
+  <div class="spinner"></div>
+</div>
+</body>
