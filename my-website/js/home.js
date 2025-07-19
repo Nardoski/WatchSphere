@@ -5,6 +5,8 @@ let allEpisodes = [];
 let currentEpisodePage = 1;
 let debounceTimer;
 let carouselIndex = 0;
+let slides;
+let carouselTimer;
 const currentPages = {
   movie: 1,
   tv: 1,
@@ -18,6 +20,45 @@ function showLoader() {
 }
 function hideLoader() {
   document.getElementById('loader').style.display = 'none';
+}
+
+function startCarousel() {
+  slides = document.querySelectorAll('.carousel-slide');
+  clearInterval(carouselTimer);
+  carouselTimer = setInterval(nextSlide, 7000);
+}
+
+function nextSlide() {
+  if (!slides?.length) return;
+  slides[carouselIndex].classList.remove('active');
+  carouselIndex = (carouselIndex + 1) % slides.length;
+  slides[carouselIndex].classList.add('active');
+}
+
+function prevSlide() {
+  if (!slides?.length) return;
+  slides[carouselIndex].classList.remove('active');
+  carouselIndex = (carouselIndex - 1 + slides.length) % slides.length;
+  slides[carouselIndex].classList.add('active');
+}
+
+function enableSwipeGesture() {
+  const banner = document.getElementById('banner-carousel');
+  let startX = 0;
+  let endX = 0;
+
+  banner.addEventListener('touchstart', (e) => {
+    startX = e.changedTouches[0].screenX;
+  });
+
+  banner.addEventListener('touchend', (e) => {
+    endX = e.changedTouches[0].screenX;
+    if (startX - endX > 50) {
+      nextSlide();
+    } else if (endX - startX > 50) {
+      prevSlide();
+    }
+  });
 }
 
 async function loadContent({ 
@@ -110,8 +151,27 @@ function displayBannerCarousel(items) {
     slide.appendChild(overlay);
     bannerContainer.appendChild(slide);
   });
+  
+  const bannerCarousel = document.getElementById('banner-carousel');
+
+// Add arrows after slides are rendered
+const leftArrow = document.createElement('button');
+leftArrow.className = 'carousel-arrow left';
+leftArrow.innerHTML = '❮';
+leftArrow.onclick = prevSlide;
+
+const rightArrow = document.createElement('button');
+rightArrow.className = 'carousel-arrow right';
+rightArrow.innerHTML = '❯';
+rightArrow.onclick = nextSlide;
+
+// Append to banner
+bannerCarousel.appendChild(leftArrow);
+bannerCarousel.appendChild(rightArrow);
 
   startCarousel();
+  enableSwipeGesture();
+  
 }
 
 
@@ -430,15 +490,6 @@ function debounce(callback, delay = 300) {
   debounceTimer = setTimeout(callback, delay);
 }
 
-function startCarousel() {
-  const slides = document.querySelectorAll('.carousel-slide');
-  setInterval(() => {
-    slides[carouselIndex].classList.remove('active');
-    carouselIndex = (carouselIndex + 1) % slides.length;
-    slides[carouselIndex].classList.add('active');
-  }, 7000); // change slide every 7 seconds
-}
-
 function playInline(type, id) {
   const embedURL = `https://vidsrc.cc/v2/embed/${type}/${id}`;
 
@@ -475,4 +526,3 @@ function playInline(type, id) {
   banner.appendChild(closeBtn);
   banner.appendChild(iframe);
 }
-
