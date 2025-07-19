@@ -45,11 +45,10 @@ function prevSlide() {
 }
 
 function updateDots() {
-  const dots = document.querySelectorAll('.carousel-dot');
-  dots.forEach(dot => dot.classList.remove('active'));
-  if (dots[carouselIndex]) {
-    dots[carouselIndex].classList.add('active');
-  }
+    const dots = document.querySelectorAll('.carousel-dot');
+    dots.forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === carouselIndex);
+  });
 }
 
 function enableSwipeGesture() {
@@ -72,7 +71,7 @@ function enableSwipeGesture() {
 }
 
 function goToSlide(index) {
-  if (!slides?.length || index === carouselIndex) return;
+  if (!slides?.length || index < 0 || index >= slides.length || index === carouselIndex) return;
   slides[carouselIndex].classList.remove('active');
   carouselIndex = index;
   slides[carouselIndex].classList.add('active');
@@ -144,7 +143,7 @@ async function fetchTrendingAnime() {
 
 function displayBannerCarousel(items) {
   const bannerContainer = document.getElementById('banner-carousel');
-  bannerContainer.innerHTML = ''; // clear previous
+  bannerContainer.innerHTML = ''; // Clear previous
 
   items.slice(0, 5).forEach((item, index) => {
     const slide = document.createElement('div');
@@ -166,48 +165,43 @@ function displayBannerCarousel(items) {
       </div>
     `;
 
+    // ✅ Add pagination dots ONLY on the first slide
+    if (index === 0) {
+      const dotsWrapper = document.createElement('div');
+      dotsWrapper.className = 'carousel-dots';
+
+      items.slice(0, 5).forEach((_, dotIndex) => {
+        const dot = document.createElement('span');
+        dot.className = 'carousel-dot';
+        if (dotIndex === 0) dot.classList.add('active');
+        dot.onclick = () => goToSlide(dotIndex);
+        dotsWrapper.appendChild(dot);
+      });
+
+      overlay.appendChild(dotsWrapper); // ✅ Append below buttons
+    }
+
     slide.appendChild(overlay);
     bannerContainer.appendChild(slide);
   });
-  
-  const bannerCarousel = document.getElementById('banner-carousel');
 
-// Add arrows after slides are rendered
-const leftArrow = document.createElement('button');
-leftArrow.className = 'carousel-arrow left';
-leftArrow.innerHTML = '❮';
-leftArrow.onclick = prevSlide;
+  // ➕ Add left/right arrows
+  const leftArrow = document.createElement('button');
+  leftArrow.className = 'carousel-arrow left';
+  leftArrow.innerHTML = '❮';
+  leftArrow.onclick = prevSlide;
 
-const rightArrow = document.createElement('button');
-rightArrow.className = 'carousel-arrow right';
-rightArrow.innerHTML = '❯';
-rightArrow.onclick = nextSlide;
+  const rightArrow = document.createElement('button');
+  rightArrow.className = 'carousel-arrow right';
+  rightArrow.innerHTML = '❯';
+  rightArrow.onclick = nextSlide;
 
-// Append to banner
-bannerCarousel.appendChild(leftArrow);
-bannerCarousel.appendChild(rightArrow);
-  
-  // --- Create Dots ---
-const dotsWrapper = document.createElement('div');
-dotsWrapper.className = 'carousel-dots';
-
-items.slice(0, 5).forEach((item, index) => {
-  const dot = document.createElement('div');
-  dot.className = 'carousel-dot';
-  if (index === 0) dot.classList.add('active');
-  dot.onclick = () => {
-    goToSlide(index);
-  };
-  dotsWrapper.appendChild(dot);
-});
-
-bannerContainer.appendChild(dotsWrapper);
+  bannerContainer.appendChild(leftArrow);
+  bannerContainer.appendChild(rightArrow);
 
   startCarousel();
   enableSwipeGesture();
-  
 }
-
 
 function displayList(items, containerId) {
   const container = document.getElementById(containerId);
