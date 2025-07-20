@@ -435,7 +435,7 @@ img {
 ============================= */
 @media (max-width: 768px) {
   .banner-carousel {
-    height: 55vh;
+    height: 50vh;
   }
 
   .carousel-slide {
