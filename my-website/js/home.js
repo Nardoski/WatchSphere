@@ -144,6 +144,8 @@ async function fetchTrendingAnime() {
 function displayBannerCarousel(items) {
   const bannerContainer = document.getElementById('banner-carousel');
   bannerContainer.innerHTML = ''; // Clear previous
+  const dotsWrapper = document.createElement('div');
+  dotsWrapper.className = 'carousel-dots';
 
   items.slice(0, 5).forEach((item, index) => {
     const slide = document.createElement('div');
@@ -165,25 +167,19 @@ function displayBannerCarousel(items) {
       </div>
     `;
 
-    // ✅ Add pagination dots ONLY on the first slide
-    if (index === 0) {
-      const dotsWrapper = document.createElement('div');
-      dotsWrapper.className = 'carousel-dots';
-
-      items.slice(0, 5).forEach((_, dotIndex) => {
-        const dot = document.createElement('span');
-        dot.className = 'carousel-dot';
-        if (dotIndex === 0) dot.classList.add('active');
-        dot.onclick = () => goToSlide(dotIndex);
-        dotsWrapper.appendChild(dot);
-      });
-
-      overlay.appendChild(dotsWrapper); // ✅ Append below buttons
-    }
-
     slide.appendChild(overlay);
     bannerContainer.appendChild(slide);
+
+    // Create dot
+    const dot = document.createElement('span');
+    dot.className = 'carousel-dot';
+    if (index === 0) dot.classList.add('active');
+    dot.onclick = () => goToSlide(index);
+    dotsWrapper.appendChild(dot);
   });
+
+  // Append dots below all slides (outside of them)
+  bannerContainer.appendChild(dotsWrapper);
 
   // ➕ Add left/right arrows
   const leftArrow = document.createElement('button');
