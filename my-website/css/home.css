@@ -439,10 +439,9 @@ img {
   }
 
   .carousel-slide {
-    background-size: contain;
-    background-position: center top;
+    background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
-    background-color: #000;
   }
   .nav-links { display: none; }
   .hamburger { display: block; }
