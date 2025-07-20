@@ -249,14 +249,47 @@ async function showDetails(item) {
   showLoader();
   try {
     currentItem = item;
-    document.getElementById('modal-title').textContent = item.title || item.name;
-    document.getElementById('modal-description').textContent = item.overview;
-    document.getElementById('modal-image').src = `${IMG_URL}${item.poster_path}`;
-    document.getElementById('modal-rating').innerHTML = '★'.repeat(Math.round(item.vote_average / 2));
-    changeServer();
-    document.getElementById('modal').style.display = 'flex';
 
-    const isAnime = item.media_type === "tv" || item.original_language === "ja";
+    // Basic info
+    document.getElementById('modal-title').textContent = item.title || item.name;
+    document.getElementById('modal-description').textContent = item.overview || 'No description available';
+    document.getElementById('modal-image').src = item.poster_path
+      ? `${IMG_URL}${item.poster_path}`
+      : 'https://via.placeholder.com/300x450?text=No+Image';
+
+    // Load additional details from TMDB
+    const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+    const [detailsRes, creditsRes] = await Promise.all([
+      fetch(`${BASE_URL}/?endpoint=/${type}/${item.id}`).then(res => res.json()),
+      fetch(`${BASE_URL}/?endpoint=/${type}/${item.id}/credits`).then(res => res.json())
+    ]);
+
+    // Rating stars and numeric value
+    const ratingValue = detailsRes.vote_average ? detailsRes.vote_average.toFixed(1) : 'N/A';
+    document.getElementById('modal-rating').innerHTML = `⭐ ${ratingValue} / 10`;
+
+    // Genres
+    document.getElementById('modal-genres').textContent =
+      detailsRes.genres?.map(g => g.name).join(', ') || 'N/A';
+
+    // Cast
+    document.getElementById('modal-cast').textContent =
+      creditsRes.cast?.slice(0, 5).map(c => c.name).join(', ') || 'N/A';
+
+    // Runtime
+    const runtime = detailsRes.runtime || detailsRes.episode_run_time?.[0];
+    document.getElementById('modal-runtime').textContent = runtime ? `${runtime} min` : 'N/A';
+
+    // Release date
+    const releaseDate = detailsRes.release_date || detailsRes.first_air_date;
+    document.getElementById('modal-release').textContent = releaseDate || 'N/A';
+
+    // Open modal
+    document.getElementById('modal').style.display = 'flex';
+    changeServer(); // optional: depends on your logic
+
+    // Episode logic
+    const isAnime = type === 'tv' || item.original_language === 'ja';
     const episodesContainer = document.getElementById('episodes-container');
 
     if (isAnime) {
@@ -269,10 +302,7 @@ async function showDetails(item) {
         const seasonData = await seasonRes.json();
         if (seasonData.episodes) {
           allEpisodes = allEpisodes.concat(
-            seasonData.episodes.map(ep => ({
-              ...ep,
-              season_number: season
-            }))
+            seasonData.episodes.map(ep => ({ ...ep, season_number: season }))
           );
         }
       }
@@ -283,10 +313,14 @@ async function showDetails(item) {
     } else {
       episodesContainer.style.display = 'none';
     }
+
+  } catch (error) {
+    console.error('Error loading modal details:', error);
   } finally {
     hideLoader();
   }
 }
+
 
 async function changeServer(overrideSeason = null, overrideEpisode = null) {
   const server = document.getElementById('server').value;
