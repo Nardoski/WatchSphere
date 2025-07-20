@@ -434,6 +434,16 @@ img {
    Responsive
 ============================= */
 @media (max-width: 768px) {
+  .banner-carousel {
+    height: 60vh;
+  }
+
+  .carousel-slide {
+    background-size: contain;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-color: #000;
+  }
   .nav-links { display: none; }
   .hamburger { display: block; }
   .modal-body { flex-direction: column; align-items: center; }
