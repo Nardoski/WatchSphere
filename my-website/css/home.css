@@ -435,14 +435,15 @@ img {
 ============================= */
 @media (max-width: 768px) {
   .banner-carousel {
-    height: 60vh;
+    height: 55vh;
   }
 
   .carousel-slide {
     background-size: cover;
-    background-position: center;
+    background-position: center top; /* show more upper content */
     background-repeat: no-repeat;
   }
+  
   .nav-links { display: none; }
   .hamburger { display: block; }
   .modal-body { flex-direction: column; align-items: center; }
