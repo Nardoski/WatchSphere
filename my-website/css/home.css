@@ -275,6 +275,16 @@ img {
   text-align: left;
 }
 
+
+.modal-text p {
+  margin: 0.25rem 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.modal-text p strong {
+  color: var(--text-light);
+}
+
 .search-modal input {
   width: 300px;
   padding: 12px 16px;
