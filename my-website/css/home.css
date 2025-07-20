@@ -435,7 +435,8 @@ img {
 ============================= */
 @media (max-width: 768px) {
   .banner-carousel {
-    height: 50vh;
+    height: auto;
+    aspect-ratio: 16 / 9;
   }
 
   .carousel-slide {
