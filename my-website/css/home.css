@@ -111,8 +111,7 @@ img {
 .banner-carousel {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  height: auto;
+  height: 90vh;
   overflow: hidden;
 }
 
